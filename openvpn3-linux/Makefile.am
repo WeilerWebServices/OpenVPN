@@ -1,0 +1,720 @@
+#  OpenVPN 3 Linux client -- Next generation OpenVPN client
+#
+#  Copyright (C) 2017 - 2019  OpenVPN Inc. <sales@openvpn.net>
+#  Copyright (C) 2017 - 2019  David Sommerseth <davids@openvpn.net>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as
+#  published by the Free Software Foundation, version 3 of the
+#  License.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+
+AUTOMAKE_OPTIONS = foreign 1.9
+ACLOCAL_AMFLAGS = -I m4
+
+# Keep these environment variables when running 'make distcheck'
+AM_DISTCHECK_CONFIGURE_FLAGS = CXXFLAGS="${CXXFLAGS}" --enable-legacy-polkit-pkla
+
+TESTS = src/policy/syntax-check.sh
+
+SUBDIRS=
+if HAVE_PYTHON
+SUBDIRS += src/python
+endif
+SUBDIRS += distro/systemd src/service-autostart src/policy doxygen docs/man
+
+if BUILD_ADDONS_AWS
+SUBDIRS += addons/aws
+endif
+
+if ENABLE_SELINUX_BUILD
+SUBDIRS += src/selinux
+endif
+
+MAINTAINERCLEANFILES = \
+        config-version.h openvpn3-core-version \
+        config.log config.status \
+        $(srcdir)/Makefile.in \
+        $(srcdir)/config.h.in $(srcdir)/config.h.in~ $(srcdir)/configure \
+        $(srcdir)/install-sh $(srcdir)/ltmain.sh $(srcdir)/missing \
+        $(srcdir)/m4/libtool.m4 $(srcdir)/m4/lt~obsolete.m4 \
+        $(srcdir)/m4/ltoptions.m4 $(srcdir)/m4/ltsugar.m4 \
+        $(srcdir)/m4/ltversion.m4 \
+        $(srcdir)/depcomp $(srcdir)/aclocal.m4 \
+        $(srcdir)/config.guess $(srcdir)/config.sub
+
+maintainer-clean-local:
+	-git submodule deinit --all
+
+CLEANFILES = \
+	*~ \
+	src/shell/bash-completion/*~ \
+	src/shell/bash-completion/openvpn2 \
+	src/tests/python/*~
+
+DOCUMENTATION = \
+	COPYRIGHT.md \
+	README.md \
+	CLA.md \
+	docs/coding-style.md \
+	docs/dbus \
+	docs/debugging.md
+
+EXTRA_DIST = \
+	openvpn3-core-version \
+	$(DOCUMENTATION) \
+	src/shell/bash-completion/gen-openvpn2-completion.py \
+	src/shell/bash-completion/openvpn3 \
+	openvpn3-core \
+	vendor \
+	src/common/requiresqueue.hpp \
+	src/common/timestamp.hpp \
+	src/common/utils.hpp \
+	src/ovpn3cli/arghelpers.hpp \
+	src/tests/netcfg/README \
+	src/tests/netcfg/net.openvpn.v3.netcfg-generic-access.conf \
+	src/tests/python
+
+# Generate a static version reference to the Core library
+# This is used when distributing a .tar.xz file and the git
+# history inside openvpn3-core/ is not available
+openvpn3-core-version:
+	$(top_srcdir)/openvpn3-core/scripts/version > $@
+
+dist-hook: openvpn3-core-version
+# Remove openvpn3-core embedded patches which we don't need
+# and makes 'make dist' complain
+	rm -rf $(distdir)/openvpn3-core/deps/asio/patch/*.patch
+# Somehow autotools packages these object files not intended for distribution
+	rm -vf $(distdir)/vendor/googletest/googletest/src/*.o
+# Remove any backup files
+	find -type f -name *~ | xargs rm -f
+
+#
+# Compiler flags
+#
+AM_CXXFLAGS = \
+	-I$(srcdir)/src \
+	$(OPENVPN3_CORE_CXXFLAGS) \
+	$(ASIO_CXXFLAGS) \
+	$(CRYPTO_CFLAGS) \
+	$(LIBGLIBGIO_CFLAGS) \
+	$(LIBJSONCPP_CFLAGS) \
+	$(LIBLZ4_CFLAGS) \
+	$(LIBUUID_CFLAGS) \
+	$(LIBCAPNG_CFLAGS) \
+	-DLIBEXECDIR=\"$(libexecdir)\"
+
+#
+# Linker flags
+#
+LDADD = \
+	$(CRYPTO_LIBS) \
+	$(LIBGLIBGIO_LIBS) \
+	$(LIBJSONCPP_LIBS) \
+	$(LIBLZ4_LIBS) \
+	$(LIBUUID_LIBS)
+
+
+#
+#  OpenVPN 3 specific D-Bus library
+#
+DBUS_SOURCES = \
+	src/dbus/core.hpp \
+	src/dbus/connection-creds.hpp \
+	src/dbus/connection.hpp \
+	src/dbus/constants.hpp \
+	src/dbus/exceptions.hpp \
+	src/dbus/idlecheck.hpp \
+	src/dbus/glibutils.hpp \
+	src/dbus/object.hpp \
+	src/dbus/object-property.hpp \
+	src/dbus/path.hpp \
+	src/dbus/processwatch.hpp \
+	src/dbus/proxy.hpp \
+	src/dbus/requiresqueue-proxy.hpp \
+	src/dbus/signals.hpp \
+	src/dbus/glibutils.hpp
+
+if GIT_CHECKOUT
+BUILT_SOURCES = config-version.h
+src_common_utils.$(OBJEXT) : config-version.h
+src_tests_netcfg_cli.$(OBJEXT) : config-version.h
+endif
+
+
+#
+#   TEST PROGRAMS
+#
+noinst_PROGRAMS =
+
+#
+# Unit tests  -  src/tests/unit
+#
+if ENABLE_UNITTESTS
+TESTS += src/tests/unit/unit-tests
+
+UNIT_TESTS = \
+	src/tests/unit/configfileparser.cpp \
+	src/tests/unit/timestamp.cpp \
+	src/tests/unit/logevent.cpp \
+	src/tests/unit/lookup.cpp \
+	src/tests/unit/netcfg-changeevent.cpp \
+	src/tests/unit/sessionmgr-events.cpp \
+	src/tests/unit/statusevent.cpp \
+	src/tests/unit/syslog-facility-mapping.cpp \
+	src/tests/unit/dns-settings-manager-test.cpp \
+	src/tests/unit/dns-resolver-settings.cpp
+
+UNIT_TESTS_DEPS = \
+	src/common/configfileparser.cpp \
+	src/common/configfileparser.hpp \
+	src/common/lookup.cpp \
+	src/common/timestamp.cpp \
+	src/netcfg/netcfg-changeevent.cpp \
+	src/netcfg/netcfg-changetype.cpp \
+	src/netcfg/dns/resolver-settings.cpp \
+	src/netcfg/dns/settings-manager.cpp \
+	src/sessionmgr/sessionmgr-events.cpp
+
+
+AM_CXXFLAGS += -I$(top_srcdir)/vendor/googletest/googletest \
+        -isystem $(top_srcdir)/vendor/googletest/googletest/include
+
+# Create a static library containig the googletest/gtest code
+noinst_LIBRARIES = src/tests/unit/libgtest.a
+src_tests_unit_libgtest_a_SOURCES = \
+	vendor/googletest/googletest/src/gtest-all.cc \
+	vendor/googletest/googletest/src/gtest_main.cc
+
+noinst_PROGRAMS += src/tests/unit/unit-tests
+src_tests_unit_unit_tests_LDADD = src/tests/unit/libgtest.a $(LIBGLIBGIO_LIBS) $(LIBJSONCPP_LIBS)
+src_tests_unit_unit_tests_SOURCES = \
+	$(UNIT_TESTS_DEPS) $(UNIT_TESTS)
+else
+src/tests/unit/unit-tests :
+	@echo "Unit tests disabled.  Run ./configure again without --disable-unit-tests"
+endif
+
+if BUILD_TEST_PROGS
+noinst_PROGRAMS += \
+	src/tests/command-parser/cmdparser \
+	src/tests/ovpn3-core/profilemerge-optionlist \
+	src/tests/misc/config-export-json-test \
+	src/tests/misc/gettimestamp \
+	src/tests/misc/json-config-import-test \
+	src/tests/misc/log-prefix-selftest \
+	src/tests/misc/logwriter-tests \
+	src/tests/misc/lookup-tests \
+	src/tests/misc/netcfg-dns-direct-file-selftest \
+	src/tests/misc/syslog-facility-mapping-test \
+	src/tests/dbus/config-lock-down \
+	src/tests/dbus/config-override-selftest \
+	src/tests/dbus/conncreds \
+	src/tests/dbus/enable-logging \
+	src/tests/dbus/fetch-avail-config-paths \
+	src/tests/dbus/fetch-avail-session-paths \
+	src/tests/dbus/fetch-config \
+	src/tests/dbus/fetch-config2 \
+	src/tests/dbus/get-acl \
+	src/tests/dbus/get-config-overrides \
+	src/tests/dbus/get-service-version-prop \
+	src/tests/dbus/getlastlogevent \
+	src/tests/dbus/getlaststatus \
+	src/tests/dbus/getconnectionstats \
+	src/tests/dbus/log-listener \
+	src/tests/dbus/log-listener2 \
+	src/tests/dbus/logevent-selftest \
+	src/tests/dbus/logservice1 \
+	src/tests/dbus/manager-lookupconfigname \
+	src/tests/dbus/netcfg-changeevent-selftest \
+	src/tests/dbus/netcfg-proxy-unit \
+	src/tests/dbus/netcfg-systemd-resolved-basic \
+	src/tests/dbus/signal-listener \
+	src/tests/dbus/statusevent-selftest \
+	src/tests/dbus/proc-wait-for \
+	src/tests/dbus/proc-wait-for-pid \
+	src/tests/dbus/proxy-checkserviceavail \
+	src/tests/dbus/request-queue-client \
+	src/tests/dbus/request-queue-client2 \
+	src/tests/dbus/request-queue-service \
+	src/tests/netcfg/clinetcfg
+
+#
+# Other tests
+#
+
+# src/tests/comand-parser
+#
+src_tests_command_parser_cmdparser_SOURCES = \
+	src/tests/command-parser/cmdparser.cpp \
+	src/common/cmdargparser.cpp \
+	src/common/configfileparser.cpp \
+	src/common/utils.cpp
+
+# src/tests/ovpn3-core
+#
+src_tests_ovpn3_core_profilemerge_optionlist_SOURCES = \
+	src/tests/ovpn3-core/profilemerge-optionlist.cpp \
+	src/common/cmdargparser.cpp \
+	src/common/configfileparser.cpp \
+	src/common/utils.cpp
+
+# src/tests/misc
+#
+src_tests_misc_config_export_json_test_SOURCES = \
+	src/tests/misc/config-export-json-test.cpp
+
+src_tests_misc_gettimestamp_SOURCES = \
+	src/tests/misc/gettimestamp.cpp \
+	src/common/timestamp.cpp
+
+src_tests_misc_json_config_import_test_SOURCES = \
+	src/tests/misc/json-config-import-test.cpp
+
+src_tests_misc_log_prefix_selftest_SOURCES = \
+	src/tests/misc/log-prefix-selftest.cpp
+
+src_tests_misc_logwriter_tests_SOURCES = \
+	src/tests/misc/logwriter-tests.cpp \
+	src/common/timestamp.cpp
+
+src_tests_misc_lookup_tests_SOURCES = \
+	src/tests/misc/lookup-tests.cpp \
+	src/common/lookup.cpp \
+	src/common/utils.cpp
+
+src_tests_misc_netcfg_dns_direct_file_selftest_SOURCES = \
+	src/tests/misc/netcfg-dns-direct-file-selftest.cpp \
+	src/common/timestamp.cpp \
+	src/netcfg/dns/resolvconf-file.cpp \
+	src/netcfg/dns/resolver-settings.cpp \
+	src/netcfg/dns/settings-manager.cpp \
+	src/netcfg/netcfg-changeevent.cpp
+src_tests_misc_netcfg_dns_direct_file_selftest_CXXFLAGS=$(AM_CXXFLAGS) -DENABLE_DEBUG
+
+src_tests_misc_syslog_facility_mapping_test_SOURCES = \
+	src/tests/misc/syslog-facility-mapping-test.cpp
+
+# src/tests/dbus
+#
+src_tests_dbus_config_lock_down_SOURCES = \
+	src/tests/dbus/config-lock-down.cpp
+
+src_tests_dbus_config_override_selftest_SOURCES = \
+	src/tests/dbus/config-override-selftest.cpp \
+	src/configmgr/overrides.cpp
+
+src_tests_dbus_conncreds_SOURCES = \
+	src/tests/dbus/conncreds.cpp
+
+src_tests_dbus_enable_logging_SOURCES = \
+	src/tests/dbus/enable-logging.cpp
+
+src_tests_dbus_fetch_avail_config_paths_SOURCES = \
+	src/tests/dbus/fetch-avail-config-paths.cpp
+
+src_tests_dbus_fetch_avail_session_paths_SOURCES = \
+	src/tests/dbus/fetch-avail-session-paths.cpp \
+	src/common/requiresqueue.cpp
+
+src_tests_dbus_fetch_config_SOURCES = \
+	src/tests/dbus/fetch-config.cpp
+
+src_tests_dbus_fetch_config2_SOURCES = \
+	src/tests/dbus/fetch-config2.cpp
+
+src_tests_dbus_get_acl_SOURCES = \
+	src/tests/dbus/get-acl.cpp \
+	src/common/lookup.cpp
+
+src_tests_dbus_get_config_overrides_SOURCES = \
+	src/tests/dbus/get-config-overrides.cpp \
+	src/configmgr/overrides.cpp
+
+src_tests_dbus_get_service_version_prop_SOURCES = \
+	src/tests/dbus/get-service-version-prop.cpp
+
+src_tests_dbus_getlastlogevent_SOURCES = \
+	src/tests/dbus/getlastlogevent.cpp
+
+src_tests_dbus_getlaststatus_SOURCES = \
+	src/tests/dbus/getlaststatus.cpp
+
+src_tests_dbus_getconnectionstats_SOURCES = \
+	src/tests/dbus/getconnectionstats.cpp
+
+src_tests_dbus_log_listener_SOURCES = \
+	src/tests/dbus/log-listener.cpp \
+	src/common/utils.cpp
+
+src_tests_dbus_log_listener2_SOURCES = \
+	src/tests/dbus/log-listener2.cpp \
+	src/common/utils.cpp
+
+src_tests_dbus_logevent_selftest_SOURCES = \
+	src/tests/dbus/logevent-selftest.cpp
+
+src_tests_dbus_logservice1_SOURCES = \
+	src/tests/dbus/logservice1.cpp \
+	src/common/cmdargparser.cpp \
+	src/common/configfileparser.cpp \
+	src/common/timestamp.cpp \
+	src/common/utils.cpp
+
+src_tests_dbus_manager_lookupconfigname_SOURCES = \
+	src/tests/dbus/manager-lookupconfigname.cpp
+
+src_tests_dbus_netcfg_changeevent_selftest_SOURCES = \
+	src/tests/dbus/netcfg-changeevent-selftest.cpp \
+	src/netcfg/netcfg-changeevent.cpp
+
+src_tests_dbus_netcfg_proxy_unit_SOURCES = \
+	src/tests/dbus/netcfg-proxy-unit.cpp \
+	src/netcfg/proxy-netcfg.cpp
+
+src_tests_dbus_netcfg_systemd_resolved_basic_SOURCES = \
+	src/tests/dbus/netcfg-systemd-resolved-basic.cpp \
+	$(DBUS_SOURCES) \
+	src/common/cmdargparser.cpp \
+	src/common/configfileparser.cpp \
+	src/common/utils.cpp \
+	src/netcfg/dns/proxy-systemd-resolved.cpp \
+	src/netcfg/dns/proxy-systemd-resolved.hpp
+
+src_tests_dbus_signal_listener_SOURCES = \
+	src/tests/dbus/signal-listener.cpp \
+	src/common/utils.cpp \
+	src/netcfg/netcfg-changeevent.cpp \
+	src/sessionmgr/sessionmgr-events.cpp
+
+src_tests_dbus_statusevent_selftest_SOURCES = \
+	src/tests/dbus/statusevent-selftest.cpp
+
+src_tests_dbus_proc_wait_for_SOURCES = \
+	src/tests/dbus/proc-wait-for.cpp \
+	src/common/utils.cpp
+
+src_tests_dbus_proc_wait_for_pid_SOURCES = \
+	src/tests/dbus/proc-wait-for-pid.cpp \
+	src/common/utils.cpp
+
+src_tests_dbus_proxy_checkserviceavail_SOURCES = \
+	src/tests/dbus/proxy-checkserviceavail.cpp
+
+src_tests_dbus_request_queue_client_SOURCES = \
+	src/tests/dbus/request-queue-client.cpp \
+	src/common/requiresqueue.cpp
+
+src_tests_dbus_request_queue_client2_SOURCES = \
+	src/tests/dbus/request-queue-client2.cpp \
+	src/common/requiresqueue.cpp
+
+src_tests_dbus_request_queue_service_SOURCES = \
+	src/tests/dbus/request-queue-service.cpp \
+	src/common/requiresqueue.cpp \
+	src/common/utils.cpp
+
+src_tests_netcfg_clinetcfg_SOURCES = \
+	src/tests/netcfg/cli.cpp \
+	src/client/core-client.hpp \
+	src/client/backend-signals.hpp \
+	src/client/statistics.hpp \
+	src/client/statusevent.hpp \
+	$(DBUS_SOURCES) \
+	src/common/core-extensions.hpp \
+	src/common/requiresqueue.hpp \
+	src/common/timestamp.cpp \
+	src/common/utils.hpp \
+	src/configmgr/proxy-configmgr.hpp \
+	src/log/dbus-log.hpp \
+	src/log/proxy-log.hpp \
+	src/netcfg/proxy-netcfg.cpp \
+	config-version.h
+endif
+
+#
+#  User binaries
+#
+bin_PROGRAMS = src/ovpn3cli/openvpn3
+
+sbin_PROGRAMS = src/ovpn3cli/openvpn3-admin
+
+#
+#  System binaries
+#
+pkglibexec_PROGRAMS = \
+	src/client/openvpn3-service-client \
+	src/client/openvpn3-service-backendstart \
+	src/configmgr/openvpn3-service-configmgr \
+	src/sessionmgr/openvpn3-service-sessionmgr \
+	src/netcfg/openvpn3-service-netcfg \
+	src/log/openvpn3-service-logger
+
+#
+#  openvpn3: Command line front-end
+#
+src_ovpn3cli_openvpn3_SOURCES = \
+	src/ovpn3cli/openvpn3.cpp \
+	src/ovpn3cli/arghelpers.cpp \
+	src/ovpn3cli/ovpn3cli.hpp \
+	src/common/lookup.cpp \
+	src/common/lookup.hpp \
+	src/ovpn3cli/commands/commands.hpp \
+	src/ovpn3cli/commands/version.cpp \
+	src/ovpn3cli/commands/config.cpp \
+	src/ovpn3cli/commands/log.cpp \
+	src/ovpn3cli/commands/log-service.cpp \
+	src/ovpn3cli/commands/session.cpp \
+	$(DBUS_SOURCES) \
+	src/configmgr/proxy-configmgr.hpp \
+	src/configmgr/overrides.cpp \
+	src/sessionmgr/proxy-sessionmgr.hpp \
+	src/sessionmgr/sessionmgr-events.cpp \
+	src/dbus/requiresqueue-proxy.hpp \
+	src/common/cmdargparser.cpp \
+	src/common/cmdargparser.hpp \
+	src/common/cmdargparser-exceptions.hpp \
+	src/common/configfileparser.cpp \
+	src/common/configfileparser.hpp \
+	src/common/requiresqueue.cpp \
+	src/common/timestamp.cpp \
+	src/common/utils.cpp
+
+#
+# openvpn3-admin:  Service management admin utility
+#
+src_ovpn3cli_openvpn3_admin_SOURCES = \
+	src/ovpn3cli/openvpn3-admin.cpp \
+	src/ovpn3cli/arghelpers.cpp \
+	src/ovpn3cli/ovpn3cli.hpp \
+	src/ovpn3cli/commands/commands.hpp \
+	src/ovpn3cli/commands/version.cpp \
+	src/ovpn3cli/commands/log-service.cpp \
+	src/ovpn3cli/commands/netcfg-service.cpp \
+	src/common/cmdargparser.cpp \
+	src/common/configfileparser.cpp \
+	src/common/configfileparser.hpp \
+	src/common/utils.cpp \
+	src/netcfg/proxy-netcfg.cpp
+src_ovpn3cli_openvpn3_admin_CXXFLAGS=$(AM_CXXFLAGS) -DOVPN3CLI_OPENVPN3ADMIN
+
+#
+#  openvpn3-service-client: The VPN client process
+#
+src_client_openvpn3_service_client_SOURCES = \
+	src/client/openvpn3-service-client.cpp \
+	src/client/core-client.hpp \
+	src/client/core-client-netcfg.hpp \
+	src/client/backend-signals.hpp \
+	src/client/statistics.hpp \
+	src/client/statusevent.hpp \
+	$(DBUS_SOURCES) \
+	src/common/cmdargparser.cpp \
+	src/common/configfileparser.cpp \
+	src/common/core-extensions.hpp \
+	src/common/requiresqueue.cpp \
+	src/common/timestamp.cpp \
+	src/common/utils.cpp \
+	src/configmgr/overrides.cpp \
+	src/configmgr/proxy-configmgr.hpp \
+	src/log/dbus-log.hpp \
+	src/log/proxy-log.hpp \
+	src/netcfg/proxy-netcfg.hpp \
+	src/netcfg/proxy-netcfg.cpp
+
+#
+#  openvpn3-service-backendstart: Service which starts VPN client processes
+#
+src_client_openvpn3_service_backendstart_SOURCES = \
+	src/client/openvpn3-service-backendstart.cpp \
+	$(DBUS_SOURCES) \
+	src/common/cmdargparser.cpp \
+	src/common/configfileparser.cpp \
+	src/common/utils.cpp \
+	src/log/dbus-log.hpp
+
+
+#
+#  openvpn3-service-configmgr: Configuration manager
+#
+src_configmgr_openvpn3_service_configmgr_SOURCES = \
+	src/configmgr/openvpn3-service-configmgr.cpp \
+	src/configmgr/configmgr.hpp \
+	src/configmgr/overrides.cpp \
+	src/configmgr/overrides.hpp \
+	$(DBUS_SOURCES) \
+	src/common/core-extensions.hpp \
+	src/common/cmdargparser.cpp \
+	src/common/configfileparser.cpp \
+	src/common/lookup.cpp \
+	src/common/timestamp.cpp \
+	src/common/utils.cpp \
+	src/log/dbus-log.hpp
+
+
+#
+#  openvpn3-service-sessionmgr: VPN Session manager
+#
+src_sessionmgr_openvpn3_service_sessionmgr_SOURCES = \
+	src/sessionmgr/openvpn3-service-sessionmgr.cpp \
+	src/sessionmgr/sessionmgr.hpp \
+	src/sessionmgr/sessionmgr-events.hpp \
+	src/sessionmgr/sessionmgr-events.cpp \
+	src/sessionmgr/sessionmgr-exceptions.hpp \
+	src/client/statusevent.hpp \
+	$(DBUS_SOURCES) \
+	src/common/cmdargparser.cpp \
+	src/common/configfileparser.cpp \
+	src/common/lookup.cpp \
+	src/common/requiresqueue.cpp \
+	src/common/timestamp.cpp \
+	src/common/utils.cpp \
+	src/log/dbus-log.hpp \
+	src/netcfg/proxy-netcfg.cpp
+
+
+#
+#  openvpn3-service-netcfg: Network Configuration Manager
+#
+src_netcfg_openvpn3_service_netcfg_SOURCES = \
+	src/netcfg/openvpn3-service-netcfg.cpp \
+	src/netcfg/core-tunbuilder.cpp \
+	src/netcfg/netcfg.hpp \
+	src/netcfg/netcfg-configfile.hpp \
+	src/netcfg/netcfg-device.hpp \
+	src/netcfg/netcfg-exception.hpp \
+	src/netcfg/netcfg-options.hpp \
+	src/netcfg/netcfg-signals.hpp \
+	src/netcfg/netcfg-changeevent.cpp \
+	src/netcfg/netcfg-changeevent.hpp \
+	src/netcfg/netcfg-changetype.cpp \
+	src/netcfg/netcfg-changetype.hpp \
+	src/netcfg/netcfg-subscriptions.cpp \
+	src/netcfg/netcfg-subscriptions.hpp \
+	src/netcfg/core-tunbuilder.hpp \
+	src/netcfg/dns/proxy-systemd-resolved.cpp \
+	src/netcfg/dns/proxy-systemd-resolved.hpp \
+	src/netcfg/dns/resolvconf-file.cpp \
+	src/netcfg/dns/resolvconf-file.hpp \
+	src/netcfg/dns/resolver-backend-interface.hpp \
+	src/netcfg/dns/resolver-settings.cpp \
+	src/netcfg/dns/resolver-settings.hpp \
+	src/netcfg/dns/settings-manager.cpp \
+	src/netcfg/dns/settings-manager.hpp \
+	src/netcfg/dns/systemd-resolved.cpp \
+	src/netcfg/dns/systemd-resolved.hpp \
+	$(DBUS_SOURCES) \
+	src/common/cmdargparser.cpp \
+	src/common/configfileparser.cpp \
+	src/common/lookup.cpp \
+	src/common/requiresqueue.cpp \
+	src/common/timestamp.cpp \
+	src/common/utils.cpp \
+	src/log/core-dbus-logbase.hpp \
+	src/log/dbus-log.hpp
+src_netcfg_openvpn3_service_netcfg_LDADD = $(LIBCAPNG_LIBS) $(LIBGLIBGIO_LIBS) $(LIBJSONCPP_LIBS) $(LIBUUID_LIBS)
+
+
+#
+#  openvpn3-service-logger: D-Bus based log fetcher
+#
+src_log_openvpn3_service_logger_SOURCES = \
+	src/log/openvpn3-service-logger.cpp \
+	src/log/ansicolours.hpp \
+	src/log/colourengine.hpp \
+	src/log/dbus-log.hpp \
+	src/log/log-helpers.hpp \
+	src/log/logevent.hpp \
+	src/log/logger.hpp \
+	src/log/logwriter.hpp \
+	src/log/service.hpp \
+	src/common/cmdargparser.cpp \
+	src/common/configfileparser.cpp \
+	src/common/timestamp.cpp \
+	$(DBUS_SOURCES) \
+	src/common/utils.cpp
+
+#
+# Add-ons: Amazon Web Service integration
+#
+addons_aws_openvpn3_service_aws_SOURCES = \
+    addons/aws/openvpn3-service-aws.cpp \
+    src/common/cmdargparser.cpp \
+    src/common/configfileparser.cpp \
+    src/common/timestamp.cpp \
+    src/netcfg/netcfg-changeevent.cpp \
+    src/netcfg/proxy-netcfg.cpp \
+    src/netcfg/netcfg-changetype.cpp \
+    src/common/utils.cpp
+addons_aws_openvpn3_service_aws_CXXFLAGS = \
+    $(AM_CXXFLAGS) \
+    $(LIBTINYXML2_CFLAGS) \
+    $(LIBJSONCPP_CFLAGS)
+addons_aws_openvpn3_service_aws_LDADD = \
+    $(OPENSSL_LIBS) \
+    $(LIBGLIBGIO_LIBS) \
+    $(LIBJSONCPP_LIBS) \
+    $(LIBTINYXML2_LIBS)
+
+if BUILD_ADDONS_AWS
+pkglibexec_PROGRAMS += addons/aws/openvpn3-service-aws
+endif
+
+
+#
+#  Misc utilities
+#
+src/shell/bash-completion/openvpn2:
+if ENABLE_BASH_COMPLETION
+if HAVE_PYTHON
+	$(AM_V_GEN)src/shell/bash-completion/gen-openvpn2-completion.py --python-source-dir $(top_srcdir)/src/python > $@
+endif
+endif
+
+all-local: src/shell/bash-completion/openvpn2
+
+install-data-local :
+if ENABLE_BASH_COMPLETION
+	$(MKDIR_P) "${DESTDIR}/${bash_completion_dir}/"
+if HAVE_PYTHON
+	install -m 644 src/shell/bash-completion/openvpn2 "${DESTDIR}/${bash_completion_dir}/"
+endif
+	install -m 644 src/shell/bash-completion/openvpn3 "${DESTDIR}/${bash_completion_dir}/"
+	pushd "${DESTDIR}/${bash_completion_dir}/" ; \
+	ln -sf openvpn3 openvpn3-admin ; \
+	popd
+endif
+
+uninstall-local :
+if ENABLE_BASH_COMPLETION
+	-for f in openvpn2 openvpn3 openvpn3-admin; do \
+		rm -vf  ${DESTDIR}/${bash_completion_dir}/$$f; \
+	done
+endif
+
+
+#
+#  Track git referenes of the check-out
+#
+config-version.h:
+	@CONFIGURE_GIT_CHFILES="`GIT_DIR=\"$(top_srcdir)/.git\" $(GIT) diff-files --name-status -r --ignore-submodules --quiet -- || echo \"+\"`"; \
+	CONFIGURE_GIT_UNCOMMITTED="`GIT_DIR=\"$(top_srcdir)/.git\" $(GIT) diff-index --cached  --quiet --ignore-submodules HEAD || echo \"*\"`"; \
+	CONFIGURE_GIT_REVISION="`GIT_DIR=\"$(top_srcdir)/.git\" $(GIT) rev-parse --symbolic-full-name HEAD | cut -d/ -f3-`:`GIT_DIR=\"$(top_srcdir)/.git\" $(GIT) rev-parse --short=16 HEAD`"; \
+	echo "#define CONFIGURE_GIT_REVISION \"$${CONFIGURE_GIT_REVISION}\"" > config-version.h.tmp; \
+	echo "#define CONFIGURE_GIT_FLAGS \"$${CONFIGURE_GIT_CHFILES}$${CONFIGURE_GIT_UNCOMMITTED}\"" >> config-version.h.tmp;
+
+	@if ! [ -f config-version.h ] || ! cmp -s config-version.h.tmp config-version.h; then \
+		echo "replacing config-version.h"; \
+		mv config-version.h.tmp config-version.h; \
+	else \
+		rm -f config-version.h.tmp; \
+	fi

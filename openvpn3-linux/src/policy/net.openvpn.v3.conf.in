@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE busconfig PUBLIC
+ "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+<busconfig>
+  <policy user="@OPENVPN_USERNAME@">
+    <!--
+         The "@OPENVPN_USERNAME@" needs these privileges to get/set properties
+         in the backend VPN client objects.  Only this user needs these
+         privileges.
+
+         FIXME: Reduce this very broad privilege access.  It should be limited
+                to only net.openvpn.v3.* send_destinations
+    -->
+    <allow send_interface="org.freedesktop.DBus.Properties"
+           send_type="method_call"
+           send_member="Get"/>
+    <allow send_interface="org.freedesktop.DBus.Properties"
+           send_type="method_call"
+           send_member="Set"/>
+    <allow send_interface="org.freedesktop.DBus.Properties"
+           send_type="method_call"
+           send_member="GetAll"/>
+
+    <allow send_interface="org.freedesktop.DBus.Peer"
+           send_type="method_call"
+           send_member="Ping"/>
+  </policy>
+</busconfig>

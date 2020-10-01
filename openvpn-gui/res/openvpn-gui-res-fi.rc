@@ -1,0 +1,483 @@
+/*
+ *  OpenVPN-GUI -- A Windows GUI for OpenVPN.
+ *
+ *  Copyright (C) 2004 Mathias Sundman <mathias@nilings.se>
+ *                2009 Heiko Hund <heikoh@users.sf.net>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program (see the file COPYING included with this
+ *  distribution); if not, write to the Free Software Foundation, Inc.,
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/* Passphrase Dialog */
+ID_DLG_PASSPHRASE DIALOGEX 6, 18, 160, 83
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | DS_CENTER | DS_SETFOREGROUND
+EXSTYLE WS_EX_TOPMOST
+CAPTION "OpenVPN - Yksityisen avaimen salasana"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
+BEGIN
+    LTEXT "Anna salasana:", 201, 6, 6, 100, 10
+    EDITTEXT ID_EDT_PASSPHRASE, 6, 17, 107, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    CHECKBOX "Tallenna salasana", ID_CHK_SAVE_PASS, 6, 33, 100, 10
+    PUSHBUTTON "OK", IDOK, 20, 49, 50, 14
+    PUSHBUTTON "Peruuta", IDCANCEL, 90, 49, 50, 14
+    LTEXT "", ID_TXT_WARNING, 6, 65, 100, 10
+END
+
+/* Auth Username/Password Dialog */
+ID_DLG_AUTH DIALOGEX 6, 18, 160, 95
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | DS_CENTER | DS_SETFOREGROUND
+EXSTYLE WS_EX_TOPMOST
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
+BEGIN
+    LTEXT "Käyttäjänimi:", 0, 6, 9, 50, 10
+    LTEXT "Salasana:", 0, 6, 26, 50, 10
+    EDITTEXT ID_EDT_AUTH_USER, 60, 6, 94, 12, ES_AUTOHSCROLL
+    EDITTEXT ID_EDT_AUTH_PASS, 60, 23, 94, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    CHECKBOX "Tallenna salasana", ID_CHK_SAVE_PASS, 6, 42, 100, 10
+    PUSHBUTTON "OK", IDOK, 20, 58, 50, 14, BS_DEFPUSHBUTTON | WS_TABSTOP | WS_DISABLED
+    PUSHBUTTON "Peruuta", IDCANCEL, 90, 58, 52, 14
+    LTEXT "", ID_TXT_WARNING, 6, 80, 150, 10
+END
+
+/* Auth Username/Password/Challenge Dialog */
+ID_DLG_AUTH_CHALLENGE DIALOG 6, 18, 160, 129
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | DS_CENTER | DS_SETFOREGROUND
+CAPTION "OpenVPN - Käyttäjän todennus"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
+BEGIN
+    LTEXT "Käyttäjänimi:", 0, 6, 9, 50, 10
+    LTEXT "Salasana:", 0, 6, 26, 50, 10
+    LTEXT "Vastaus:", 0, 6, 60, 50, 10
+    EDITTEXT ID_EDT_AUTH_USER, 60, 6, 94, 12, ES_AUTOHSCROLL
+    EDITTEXT ID_EDT_AUTH_PASS, 60, 23, 94, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT "", ID_TXT_AUTH_CHALLENGE, 6, 43, 148, 10
+    EDITTEXT ID_EDT_AUTH_CHALLENGE, 60, 57, 94, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    CHECKBOX "Tallenna salasana", ID_CHK_SAVE_PASS, 6, 76, 100, 10
+    PUSHBUTTON "OK", IDOK, 20, 92, 50, 14, BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED
+    PUSHBUTTON "Peruuta", IDCANCEL, 90, 92, 52, 14
+    LTEXT "", ID_TXT_WARNING, 6, 108, 150, 10
+END
+
+/* Challenge Response Dialog */
+ID_DLG_CHALLENGE_RESPONSE DIALOG 6, 18, 212, 72
+STYLE WS_SIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | DS_CENTER | DS_SETFOREGROUND
+CAPTION "OpenVPN - Haastemenetelmä"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
+BEGIN
+    LTEXT "", ID_TXT_DESCRIPTION, 6, 9, 208, 10
+    LTEXT "Vastaus:", 0, 6, 30, 50, 10
+    EDITTEXT ID_EDT_RESPONSE, 60, 27, 94, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    PUSHBUTTON "OK", IDOK, 20, 51, 50, 14, BS_PUSHBUTTON | WS_TABSTOP
+    PUSHBUTTON "Peruuta", IDCANCEL, 90, 51, 52, 14
+END
+
+/* Status Dialog */
+ID_DLG_STATUS DIALOG 6, 18, 380, 210
+STYLE WS_SIZEBOX | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | DS_CENTER
+CAPTION "OpenVPN"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
+BEGIN
+    LTEXT "Yhdistetään…", ID_TXT_STATUS, 20, 5, 200, 10
+    LTEXT "", ID_TXT_BYTECOUNT, 20, 175, 200, 10
+    LTEXT "OpenVPN GUI 11.y.0.0/2.4.x", ID_TXT_VERSION, 220, 175, 150, 10
+    LTEXT "", ID_TXT_IP, 20, 160, 300, 10
+    PUSHBUTTON "Katkaise yhteys", ID_DISCONNECT, 50, 190, 50, 14
+    PUSHBUTTON "Yhdistä uudelleen", ID_RESTART, 150, 190, 50, 14
+    PUSHBUTTON "Piilota", ID_HIDE, 100, 190, 50, 14
+END
+
+/* Change Passphrase Dialog */
+ID_DLG_CHGPASS DIALOG 6, 18, 193, 82
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | DS_CENTER
+CAPTION "OpenVPN - Vaihda yksityisen avaimen salasana"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
+BEGIN
+    LTEXT "Nykyinen salasana:", 171, 6, 9, 85, 10
+    LTEXT "Uusi salasana:", 172, 6, 26, 85, 10
+    LTEXT "Vahvista uusi salasana:", 173, 6, 42, 85, 10
+    EDITTEXT ID_EDT_PASS_CUR, 95, 6, 90, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    EDITTEXT ID_EDT_PASS_NEW, 95, 23, 90, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    EDITTEXT ID_EDT_PASS_NEW2, 95, 39, 90, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    PUSHBUTTON "OK", IDOK, 40, 59, 50, 14
+    PUSHBUTTON "Peruuta", IDCANCEL, 103, 59, 50, 14
+    LTEXT "", ID_TXT_KEYFORMAT, 0, 0, 0, 0
+    LTEXT "", ID_TXT_KEYFILE, 0, 0, 0, 0
+END
+
+/* Proxy Settings Dialog */
+ID_DLG_PROXY DIALOG 6, 18, 249, 104
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | DS_CENTER
+CAPTION "Välipalvelin"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
+BEGIN
+    GROUPBOX "   ", 201, 6, 46, 235, 52
+    AUTORADIOBUTTON "Käytä asetustiedoston asetuksia", ID_RB_PROXY_OPENVPN, \
+                    13, 16, 200, 10, WS_GROUP | WS_TABSTOP
+    AUTORADIOBUTTON "Käytä järjestelmän välipalvelinasetuksia", \
+                    ID_RB_PROXY_MSIE, 13, 31, 200, 10
+    AUTORADIOBUTTON "Määritä asetukset itse", ID_RB_PROXY_MANUAL, 13, 46, 84, 10
+    AUTORADIOBUTTON "HTTP-välipalvelin", ID_RB_PROXY_HTTP, 20, 62, 90, 10, WS_GROUP | WS_TABSTOP
+    AUTORADIOBUTTON "SOCKS-välipalvelin", ID_RB_PROXY_SOCKS, 120, 62, 90, 10
+    LTEXT "Osoite:", ID_TXT_PROXY_ADDRESS, 20, 77, 25, 10
+    RTEXT "Portti:", ID_TXT_PROXY_PORT, 171, 77, 20, 10
+    EDITTEXT ID_EDT_PROXY_ADDRESS, 46, 75, 120, 12, ES_AUTOHSCROLL
+    EDITTEXT ID_EDT_PROXY_PORT, 196, 75, 30, 12, ES_AUTOHSCROLL
+END
+
+/* General Settings Dialog */
+ID_DLG_GENERAL DIALOGEX 6, 18, 249, 104
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | DS_CENTER
+CAPTION "Yleiset asetukset"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
+BEGIN
+    GROUPBOX "Käyttöliittymä", 201, 6, 12, 235, 30
+    LTEXT "Kieli:", ID_TXT_LANGUAGE, 17, 25, 36, 12
+    COMBOBOX ID_CMB_LANGUAGE, 37, 23, 191, 400, CBS_DROPDOWNLIST | WS_TABSTOP
+    GROUPBOX "Käynnistäminen", 202, 6, 47, 235, 30
+    AUTOCHECKBOX "Käynnistä Windowsiin kirjautuessa", ID_CHK_STARTUP, 17, 59, 200, 12
+
+    GROUPBOX "Valinnat", 202, 6, 82, 235, 105
+    AUTOCHECKBOX "Lisää lokitiedostoon", ID_CHK_LOG_APPEND, 17, 95, 200, 10
+    AUTOCHECKBOX "Näytä komentosarjaikkuna", ID_CHK_SHOW_SCRIPT_WIN, 17, 110, 200, 10
+    AUTOCHECKBOX "Yhdistä taustalla", ID_CHK_SILENT, 17, 125, 200, 10
+    AUTOCHECKBOX "Käytä aina interaktiivista palvelua", ID_CHK_ALWAYS_USE_ISERVICE, 17, 140, 200, 10
+    LTEXT "Näytä puhekupla", ID_TXT_BALLOON, 17, 155, 100, 10
+    AUTORADIOBUTTON "Yhdistettäessä", ID_RB_BALLOON1, 28, 170, 50, 10, WS_GROUP | WS_TABSTOP
+    AUTORADIOBUTTON "Myös uudelleenyhd.", ID_RB_BALLOON2, 86, 170, 90, 10
+    AUTORADIOBUTTON "Ei", ID_RB_BALLOON0, 181, 170, 40, 10
+END
+
+/* Advanced Dialog */
+ID_DLG_ADVANCED DIALOGEX 6, 18, 252, 218
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | DS_CENTER
+CAPTION "Lisäasetukset"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
+BEGIN
+    GROUPBOX "Asetustiedostot", 201, 6, 12, 235, 45
+    LTEXT "Kansio:", ID_TXT_FOLDER, 17, 25, 32, 10
+    LTEXT "Pääte:", ID_TXT_EXTENSION, 17, 40, 52, 10
+    EDITTEXT ID_EDT_CONFIG_DIR, 53, 23, 150, 12, ES_AUTOHSCROLL
+    EDITTEXT ID_EDT_CONFIG_EXT, 53, 38, 25, 12, ES_AUTOHSCROLL
+    PUSHBUTTON "…", ID_BTN_CONFIG_DIR, 208, 23, 25, 12
+
+    GROUPBOX "Lokitiedostot", 202, 6, 62, 235, 30
+    LTEXT "Kansio:", ID_TXT_FOLDER, 17, 74, 32, 10
+    EDITTEXT ID_EDT_LOG_DIR, 53, 72, 150, 12, ES_AUTOHSCROLL
+    PUSHBUTTON "…", ID_BTN_LOG_DIR, 208, 72, 25, 12
+
+    GROUPBOX "Komentosarjan aikakatkaisu", 201, 6, 97, 235, 60
+    LTEXT "Yhdistämistä ennen:", ID_TXT_PRECONNECT_TIMEOUT, 17, 110, 100, 10
+    LTEXT "Yhteyden muodostus:", ID_TXT_CONNECT_TIMEOUT, 17, 125, 90, 10
+    LTEXT "Yhteyden katkaisu:", ID_TXT_DISCONNECT_TIMEOUT, 17, 140, 90, 10
+    EDITTEXT ID_EDT_PRECONNECT_TIMEOUT, 103, 108, 20, 12, ES_AUTOHSCROLL|ES_NUMBER
+    EDITTEXT ID_EDT_CONNECT_TIMEOUT, 103, 123, 20, 12, ES_AUTOHSCROLL|ES_NUMBER
+    EDITTEXT ID_EDT_DISCONNECT_TIMEOUT, 103, 138, 20, 12, ES_AUTOHSCROLL|ES_NUMBER
+END
+
+/* About Dialog */
+ID_DLG_ABOUT DIALOG 6, 18, 249, 104
+STYLE WS_POPUP | WS_CAPTION | WS_SYSMENU | DS_CENTER
+CAPTION "Tietoja"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
+BEGIN
+    ICON ID_ICO_APP, 0, 8, 16, 21, 20
+    LTEXT "OpenVPN GUI v" PACKAGE_VERSION_RESOURCE_STR " - Graafinen käyttöliittymä OpenVPN:lle\n" \
+          "Copyright (C) 2004-2005 Mathias Sundman <info@openvpn.se>\n" \
+          "Copyright (C) 2008-2014 Heiko Hund <heikoh@users.sf.net>\n" \
+          "Copyright (C) 2012-" GUI_COPYRIGHT_YEAR_END " OpenVPN GUI contributors\n" \
+          "https://github.com/OpenVPN/openvpn-gui/", 0, 36, 15, 206, 42
+    LTEXT "OpenVPN mahdollistaa IP-verkkojen yhdistämisen toisiinsa " \
+          "suojatulla TCP/UDP-yhteydellä. Se tukee mm. SSL/TLS" \
+          "-pohjaista istuntojen todennusta ja avainten vaihtoa " \
+          "sekä pakettien salausta, todennusta ja pakkausta.\n" \
+          "\n" \
+          "Copyright (C) 2002-" CORE_COPYRIGHT_YEAR_END " OpenVPN Technologies, Inc <info@openvpn.net>\n" \
+          "https://openvpn.net/", 0, 8, 61, 240, 64
+END
+
+/* Proxy Authentication Dialog */
+ID_DLG_PROXY_AUTH DIALOG 29, 23, 154, 65
+STYLE DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | DS_CENTER
+CAPTION "OpenVPN - Välipalvelimen todennusasetukset"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
+BEGIN
+    LTEXT "Käyttäjänimi:", 201, 9, 8, 42, 10
+    EDITTEXT ID_EDT_PROXY_USER, 52, 5, 91, 12, ES_AUTOHSCROLL
+    LTEXT "Salasana:", 202, 9, 26, 38, 10
+    EDITTEXT ID_EDT_PROXY_PASS, 52, 23, 91, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    PUSHBUTTON "OK", IDOK, 58, 43, 40, 14, BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED
+END
+
+STRINGTABLE
+LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
+BEGIN
+    IDS_LANGUAGE_NAME "Suomi - Finnish"
+
+    /* Tray - Resources */
+    IDS_TIP_DEFAULT "OpenVPN GUI"
+    IDS_TIP_CONNECTED "\nYhdistetty kohteeseen: "
+    IDS_TIP_CONNECTING "\nYhdistetään kohteeseen: "
+    IDS_TIP_CONNECTED_SINCE "\nYhteys luotu: "
+    IDS_TIP_ASSIGNED_IP "\nIP-osoite: %s"
+    IDS_MENU_SERVICE "OpenVPN-palvelu"
+    IDS_MENU_IMPORT "Tuo tiedosto…"
+    IDS_MENU_SETTINGS "Asetukset…"
+    IDS_MENU_CLOSE "Poistu"
+    IDS_MENU_CONNECT "Yhdistä"
+    IDS_MENU_DISCONNECT "Katkaise yhteys"
+    IDS_MENU_RECONNECT "Yhdistä uudelleen"
+    IDS_MENU_STATUS "Näytä tila"
+    IDS_MENU_VIEWLOG "Näytä loki"
+    IDS_MENU_EDITCONFIG "Muokkaa asetuksia"
+    IDS_MENU_PASSPHRASE "Vaihda salasana"
+    IDS_MENU_CLEARPASS  "Poista tallennetut salasanat"
+    IDS_MENU_SERVICE_START "Käynnistä"
+    IDS_MENU_SERVICE_STOP "Pysäytä"
+    IDS_MENU_SERVICE_RESTART "Käynnistä uudelleen"
+    IDS_MENU_SERVICEONLY_START "Yhdistä"
+    IDS_MENU_SERVICEONLY_STOP "Katkaise yhteys"
+    IDS_MENU_SERVICEONLY_RESTART "Yhdistä uudelleen"
+    IDS_MENU_ASK_STOP_SERVICE "Haluatko katkaista yhteyden ja pysäyttää OpenVPN-palvelun?"
+
+    /* Logviewer - Resources */
+    IDS_ERR_START_LOG_VIEWER "Lokitiedoston katselimen käynnistäminen epäonnistui: %s"
+    IDS_ERR_START_CONF_EDITOR "Asetusten muokkaimen käynnistäminen epäonnistui: %s"
+
+    /* OpenVPN */
+    IDS_ERR_MANY_CONFIGS "OpenVPN GUI:n asetustiedostoja voi olla käytössä korkeintaan %d. Ota yhteys tämän sovelluksen kehittäjään, mikä tarvitset useampia."
+    IDS_NFO_NO_CONFIGS "Ei käyttökelpoisia asetustiedostoja.\n"\
+                       "Valitse ""Tuo tiedosto.."" valikosta tai kopioi asetustiedosto kansioon ""%s"" tai ""%s""."
+    IDS_ERR_CONFIG_NOT_AUTHORIZED "Yhteyden %s käynnistäminen vaatii ryhmään "\
+                                  """%s"" kuulumisen. Ota yhteys järjestelmäylläpitäjään.\n"
+    IDS_ERR_CONFIG_TRY_AUTHORIZE  "Yhteyden %s käynnistäminen vaatii ryhmään "\
+                                  """%s"" kuulumisen.\n\n"\
+                                  "Haluatko lisätä itsesi tähän ryhmään?\n"\
+                                  "Toiminto voi vaatia ylläpitäjän salasanan tai vahvistuksen."
+    IDS_NFO_CONFIG_AUTH_PENDING   "Yhteyden %s käynnistäminen vaatii ryhmään "\
+                                  """%s"" kuulumisen.\n\n"\
+                                  "Ole hyvä ja suorita aiempi varmennus loppuun."
+    IDS_ERR_ADD_USER_TO_ADMIN_GROUP "Käyttäjän lisääminen ryhmään ""%s"" epäonnistui."
+    IDS_ERR_ONE_CONN_OLD_VER "Jos käytössä on OpenVPN 2.0-beta6 tai vanhempi, käytössä voi olla kerrallaan vain yksi yhteys."
+    IDS_ERR_STOP_SERV_OLD_VER "OpenVPN GUI -sovelluksella ei voi hallita yhteyksiä, jos OpenVPN (versio 1.5/1.6) on käynnistetty palveluna. Pysäytä OpenVPN-palvelu ja yritä uudelleen."
+    IDS_ERR_CREATE_EVENT "CreateEvent epäonnistui: %s"
+    IDS_ERR_UNKNOWN_PRIORITY "Tunnistamaton prioriteetti: %s"
+    IDS_ERR_LOG_APPEND_BOOL "Lokitiedostoon lisäämisasetuksen ('%s') on oltava '0' tai '1'"
+    IDS_ERR_GET_MSIE_PROXY "Internet Explorerin välipalvelinasetusten nouto epäonnistui."
+    IDS_ERR_INIT_SEC_DESC "InitializeSecurityDescriptor failed."
+    IDS_ERR_SET_SEC_DESC_ACL "SetSecurityDescriptorDacl failed."
+    IDS_ERR_CREATE_PIPE_OUTPUT "CreatePipe on hOutputWrite failed."
+    IDS_ERR_CREATE_PIPE_INPUT "CreatePipe on hInputRead failed."
+    IDS_ERR_DUP_HANDLE_OUT_READ "DuplicateHandle on hOutputRead failed."
+    IDS_ERR_DUP_HANDLE_IN_WRITE "DuplicateHandle on hInputWrite failed."
+    IDS_ERR_CREATE_PROCESS "CreateProcess failed, exe='%s' cmdline='%s' dir='%s'"
+    IDS_ERR_CREATE_THREAD_STATUS "CreateThread to show Status window Failed."
+    IDS_NFO_STATE_WAIT_TERM "Tila: odotetaan OpenVPN:n sammumista…"
+    IDS_NFO_STATE_CONNECTED "Tila: yhdistetty"
+    IDS_NFO_NOW_CONNECTED "%s on nyt yhdistetty."
+    IDS_NFO_ASSIGN_IP "IP-osoite: %s"
+    IDS_ERR_CERT_EXPIRED "Yhdistäminen epäonnistui, koska varmenne on vanhentunut tai tietokoneen kello on väärässä ajassa."
+    IDS_ERR_CERT_NOT_YET_VALID "Yhdistäminen epäonnistui, koska varmenne ei ole vielä voimassa. Tarkista, että tietokoneesi kello on oikeassa ajassa."
+    IDS_NFO_STATE_RECONNECTING "Tila: yhdistetään uudelleen"
+    IDS_NFO_STATE_DISCONNECTED "Tila: yhteys katkaistu"
+    IDS_NFO_CONN_TERMINATED "Yhteys kohteeseen %s katkaistiin."
+    IDS_NFO_STATE_FAILED "Tila: yhdistäminen epäonnistui"
+    IDS_NFO_CONN_FAILED "Yhdistäminen kohteeseen %s epäonnistui."
+    IDS_NFO_STATE_FAILED_RECONN "Tila: yhdistäminen uudelleen epäonnistui"
+    IDS_NFO_RECONN_FAILED "Yhdistäminen uudelleen kohteeseen %s epäonnistui."
+    IDS_NFO_STATE_SUSPENDED "Tila: keskeytetty"
+    IDS_ERR_READ_STDOUT_PIPE "Lukeminen oletustulosteesta epäonnistui."
+    IDS_ERR_CREATE_EDIT_LOGWINDOW "Creating RichEdit LogWindow Failed!!"
+    IDS_ERR_SET_SIZE "Koon määrittäminen epäonnistui!"
+    IDS_ERR_AUTOSTART_CONF "Ei löydetty automaattisesti käynnistettävää asetustiedostoa %s"
+    IDS_ERR_CREATE_PIPE_IN_READ "CreatePipe on hInputRead failed."
+    IDS_NFO_STATE_CONNECTING "Tila: yhdistetään"
+    IDS_NFO_CONNECTION_XXX "OpenVPN-yhteys (%s)"
+    IDS_NFO_STATE_CONN_SCRIPT "Tila: Suoritetaan yhteydenmuodostuskomentosarjaa"
+    IDS_NFO_STATE_DISCONN_SCRIPT "Tila: Suoritetaan yhteydenkatkaisukomentosarjaa"
+    IDS_ERR_RUN_CONN_SCRIPT "Virhe suoritettaessa yhteydenmuodostoskomentosarjaa: %s"
+    IDS_ERR_GET_EXIT_CODE "Yhteydenmuodostuskomentosarjan %s paluuarvoa ei saatu"
+    IDS_ERR_CONN_SCRIPT_FAILED "Yhteydenmuodostuskomentosarjan suorittaminen epäonnistui. (paluuarvo=%ld)"
+    IDS_ERR_RUN_CONN_SCRIPT_TIMEOUT "Yhteydenmuodostamiskomentosarja aikakatkaistiin %d sekunnin jälkeen."
+    IDS_ERR_CONFIG_EXIST "Samanniminen asetustiedosto '%s' on jo olemassa. " \
+                         "Myös eri kansioissa olevilla asetustiedostoilla " \
+                         "on oltava eri nimi."
+    IDS_NFO_CONN_TIMEOUT "Yhdistäminen hallintaliittymään epäonnistui.\n" \
+                         "Lisätietoja lokitiedostossa (%s)."
+    /* main - Resources */
+    IDS_ERR_OPEN_DEBUG_FILE "Vianjäljitystiedostoon (%s) kirjoittaminen epäonnistui"
+    IDS_ERR_CREATE_PATH "Ei voitu luoda %s polkua:\n%s"
+    IDS_ERR_LOAD_RICHED20 "Kirjaston RICHED20.DLL lataaminen epäonnistui."
+    IDS_ERR_SHELL_DLL_VERSION "Kirjasto shell32.dll on liian vanha (0x%lx), tarvitaan vähintään versio 5.0."
+    IDS_NFO_SERVICE_STARTED "OpenVPN-palvelu käynnistetty."
+    IDS_NFO_SERVICE_STOPPED "OpenVPN-palvelu pysäytetty."
+    IDS_NFO_ACTIVE_CONN_EXIT "Jos OpenVPN GUI suljetaan, aktiiviset yhteydet katkeavat." \
+                             "\n\nHaluatko varmasti jatkaa?"
+    IDS_NFO_SERVICE_ACTIVE_EXIT "Yhteys on muodostettu OpenVPN-palvelun avulla. " \
+                                "Yhteydet eivät katkea, vaikka OpenVPN GUI suljettaisiinkin.\n\n" \
+                                "Suljetaanko OpenVPN GUI?"
+
+    /* options - Resources */
+    IDS_NFO_USAGE "--help\t\t\t: Näytä tämä viesti.\n" \
+                  "--connect cnn \t\t: Yhdistä kohteeseen ""cnn"" käynnistettäessä. Muista liittää tiedostopääte.\n" \
+                  "\t\t\t   Esim.: openvpn-gui --connect toimisto.ovpn\n" \
+                  "--command cmd [args]\t: Send a command to a running instance of the GUI\n" \
+                  "Supported commands:\n"\
+                  "    connect cnn            \t: connect the config named ""cnn""\n"\
+                  "    disconnect cnn         \t: disconnect the config named ""cnn""\n"\
+                  "    reconnect cnn          \t: reconnect the config named ""cnn""\n"\
+                  "    disconnect_all         \t: disconnect all connected configs\n"\
+                  "    exit                 \t\t: terminate the running GUI instance (may ask for confirmation)\n"\
+                  "    status cnn           \t\t: show the status window of config ""cnn"" if connected\n"\
+                  "    silent_connection [0|1]\t: set the silent_connection flag on (1) or off (0)\n"\
+                  "\t\t\tExample: openvpn-gui.exe --command disconnect myconfig\n"\
+                  "\n" \
+                  "Rekisterin asetukset kumoavat valinnat:\n" \
+                  "--exe_path\t\t: Polku openvpn.exe -tiedostoon.\n" \
+                  "--config_dir\t\t: Polku kansioon, jossa asetustiedostot ovat.\n" \
+                  "--ext_string\t\t: Asetustiedostojen tiedostopääte.\n" \
+                  "--log_dir\t\t\t: Lokitiedostojen tallennuskansio.\n" \
+                  "--priority_string\t\t: Prioriteetti (lisätietoja tiedostossa install.txt).\n" \
+                  "--append_string\t\t: 1=Lisää lokitiedostoon. 0=Typistä lokitiedosto yhdistettäessä.\n" \
+                  "--log_viewer\t\t: Lokikatselimen polku.\n" \
+                  "--editor\t\t\t: Asetusten muokkaimen polku.\n" \
+                  "--allow_edit\t\t: 1=Näytä asetusten muokkaus valikossa.\n" \
+                  "--allow_service\t\t: 1=Näytä palvelujen hallinta valikossa.\n" \
+                  "--allow_password\t\t: 1=Näytä salasanan vaihto valikossa.\n" \
+                  "--allow_proxy\t\t: 1=Näytä välipalvelimen asetukset valikossa.\n" \
+                  "--show_balloon\t\t: 0=Ei koskaan, 1=Ensimmäisen kerran yhdistettäessä, 2=Joka yhdistyksellä.\n" \
+                  "--service_only\t\t: 1=Käynnistä palveluna.\n" \
+                  "--silent_connection\t\t: 1=Älä näytä sovelluksen tilaa yhdistettäessä.\n" \
+                  "--show_script_window\t: 0=Piilota komentojonoikkuna, 1=Älä piilota sitä.\n" \
+                  "--passphrase_attempts\t: Salasanan syöttökertojen maksimimäärä\n" \
+                  "--connectscript_timeout\t: Yhteydenmuodostamiskomentosarjan aikakatkaisun raja.\n" \
+                  "--disconnectscript_timeout\t: Yhteydenkatkaisemiskomentosarjan aikakatkaisun raja.\n" \
+                  "--preconnectscript_timeout\t: Ennen yhdistämistä ajettavan komentosarjan aikakatkaisun raja.\n"
+
+
+    IDS_NFO_USAGECAPTION "OpenVPN GUI:n käyttö"
+    IDS_ERR_BAD_PARAMETER "Syötteen ""%s"" käsittely --option-valitsimen " \
+                          "parametrina epäonnistui, koska sen alusta puuttui '--'"
+    IDS_ERR_BAD_OPTION "Tuntematon valinta tai parametreja puuttuu: --%s\n" \
+                       "Lisätietoja saa komennolla openvpn-gui --help"
+
+    /* passphrase - Resources */
+    IDS_ERR_CREATE_PASS_THREAD "CreateThread to show ChangePassphrase dialog failed."
+    IDS_NFO_CHANGE_PWD "Vaihda yksityisen avaimen salasana (%s)"
+    IDS_ERR_PWD_DONT_MATCH "Salasanat eivät täsmää. Yritä uudelleen."
+    IDS_ERR_PWD_TO_SHORT "Salasanan on oltava vähintään %d merkkiä pitkä."
+    IDS_NFO_EMPTY_PWD "Haluatko varmasti määrittää TYHJÄN salasanan?"
+    IDS_ERR_UNKNOWN_KEYFILE_FORMAT "Tuntematon avaintiedoston muoto."
+    IDS_ERR_OPEN_PRIVATE_KEY_FILE "Virhe avattaessa yksityistä avaintiedostoa (%s)."
+    IDS_ERR_OLD_PWD_INCORRECT "Vanha salasana on virheellinen."
+    IDS_ERR_OPEN_WRITE_KEY "Kirjoittaminen yksityiseen avaintiedostoon (%s) epäonnistui."
+    IDS_ERR_WRITE_NEW_KEY "Uuden yksityisen avaintiedoston (%s) luonti epäonnistui."
+    IDS_NFO_PWD_CHANGED "Salasana vaihdettu."
+    IDS_ERR_READ_PKCS12 "PKCS #12 -tiedoston (%s) lukeminen epäonnistui."
+    IDS_ERR_CREATE_PKCS12 "PKCS #12 -tiedoston luonti ja salasanan vaihto epäonnistuivat."
+    IDS_ERR_OPEN_CONFIG "Asetustiedoston luku epäonnistui: (%s)"
+    IDS_ERR_ONLY_ONE_KEY_OPTION "Asetustiedostossa voi olla korkeintaan yksi ""key""-valinta."
+    IDS_ERR_ONLY_KEY_OR_PKCS12 "Asetustiedostossa ei voi olla yhtäaikaisesti määritettynä sekä ""key"" että ""pkcs12""."
+    IDS_ERR_ONLY_ONE_PKCS12_OPTION "Asetustiedostossa voi olla korkeintaan yksi ""pkcs12""-valinta."
+    IDS_ERR_HAVE_KEY_OR_PKCS12 "Asetustiedostossa ei ole yhtään ""key""- tai ""pkcs12""-valintaa."
+    IDS_ERR_KEY_FILENAME_TO_LONG "Asetustiedostossa määritelty avaintiedoston nimi on liian pitkä."
+    IDS_ERR_PASSPHRASE2STDIN "Salasanan välittäminen oletussyötteeseen epäonnistui."
+    IDS_ERR_AUTH_USERNAME2STDIN "Käyttäjänimen välittäminen oletussyötteeseen epäonnistui ."
+    IDS_ERR_AUTH_PASSWORD2STDIN "Salasanan välittäminen oletussyötteeseen epäonnistui."
+    IDS_ERR_CR2STDIN "CR:n välittäminen oletussyötteeseen epäonnistui."
+    IDS_ERR_INVALID_CHARS_IN_PSW "Salasana sisältää epäkelpoja merkkejä ja " \
+                                 "sitä on muutettava."
+
+    /* settings */
+    IDS_SETTINGS_CAPTION "OpenVPN - Asetukset"
+
+    /* proxy */
+    IDS_ERR_HTTP_PROXY_ADDRESS "HTTP-välipalvelimen osoite on määritettävä."
+    IDS_ERR_HTTP_PROXY_PORT "HTTP-välipalvelimen porttion määritettävä"
+    IDS_ERR_HTTP_PROXY_PORT_RANGE "HTTP-välipalvelimen portti on oltava väliltä 1-65535"
+    IDS_ERR_SOCKS_PROXY_ADDRESS "SOCKS-välipalvelimen osoite on määritettävä."
+    IDS_ERR_SOCKS_PROXY_PORT "SOCKS-välipalvelimen portti on määritettävä."
+    IDS_ERR_SOCKS_PROXY_PORT_RANGE "SOCKS-välipalvelimen portti on oltava väliltä 1-65535"
+    IDS_ERR_CREATE_REG_HKCU_KEY "Virhe luotaessa avainta ""HKEY_CURRENT_USER\\%s""."
+    IDS_ERR_GET_TEMP_PATH "Virhe määritettäessä muuttujaa TempPath funktiolla GetTempPath(). Käytetään polkua ""C:\\""."
+
+    /* service */
+    IDS_ERR_OPEN_VPN_SERVICE "Palvelun ""OpenVPNService"" avaaminen epäonnistui"
+    IDS_ERR_START_SERVICE "Palvelun ""OpenVPNService"" käynnistäminen epäonnistui"
+    IDS_ERR_QUERY_SERVICE "Palvelun tilan tarkistaminen epäonnistui."
+    IDS_ERR_SERVICE_START_FAILED "OpenVPN-palvelua ei saatu käynnistettyä."
+    IDS_ERR_OPEN_SCMGR "OpenSCManager kohtasi virheen (%d)"
+    IDS_ERR_STOP_SERVICE "OpenVPN-palvelun pysäyttäminen epäonnistui"
+    IDS_NFO_RESTARTED "OpenVPN-palvelu käynnistettiin uudelleen."
+    IDS_ERR_ACCESS_SERVICE_PIPE "Access to service pipe failed."
+    IDS_ERR_WRITE_SERVICE_PIPE "Writing to service pipe failed."
+    IDS_ERR_INSTALL_ISERVICE     """OpenVPNServiceInteractive"" ei ole asennettu.\n"
+                                 "Wintun-ajuria ja ylläpitäjän oikeuksia vaativat toimet eivät välttämättä onnistu."
+    IDS_ERR_NOTSTARTED_ISERVICE  """OpenVPNServiceInteractive"" ei ole käynnissä.\n"
+                                 "Wintun-ajuria ja ylläpitäjän oikeuksia vaativat toimet eivät välttämättä onnistu."
+    IDS_ERR_NOTSTARTED_ISERVICE_ADM  """OpenVPNServiceInteractive"" ei ole käynnissä.\n"
+                                     "Wintun-ajuri ei toimi."
+
+    /* registry */
+    IDS_ERR_GET_WINDOWS_DIR "Virhe avattaessa Windows-kansiota."
+    IDS_ERR_GET_PROFILE_DIR "Error getting User Profile Directory."
+    IDS_ERR_GET_PROGRAM_DIR "Virhe etsittäessä ""Program""-kansion sijaintia."
+    IDS_ERR_OPEN_REGISTRY "Virhe luettaessa rekisteriavainta (HKLM\\SOFTWARE\\OpenVPN).\n " \
+                          "OpenVPN:ää ei todennäköisesti ole asennettu."
+    IDS_ERR_READING_REGISTRY "Virhe luetteassa rekisteriavainta (HKLM\\SOFTWARE\\OpenVPN)."
+    IDS_ERR_PASSPHRASE_ATTEMPTS "Rekisterin avaimen ""passphrase_attempts"" arvon on oltava väliltä 1 ja 9."
+    IDS_ERR_CONN_SCRIPT_TIMEOUT "Rekisterin avaimen ""connectscript_timeout"" arvon on oltava väliltä 1 ja 99"
+    IDS_ERR_DISCONN_SCRIPT_TIMEOUT "Rekisterin avaimen ""disconnectscript_timeout"" arvon on oltava väliltä 1 ja 99."
+    IDS_ERR_PRECONN_SCRIPT_TIMEOUT "Rekisterin avaimen ""preconnectscript_timeout"" arvon on oltava väliltä 1 ja 99."
+    IDS_ERR_CREATE_REG_KEY "Virhe luotaessa rekisteriavainta HKLM\\SOFTWARE\\OpenVPN-GUI."
+    IDS_ERR_OPEN_WRITE_REG "Virhe kirjoitettaessa rekisteriin. Tämä sovellus pitää ensimmäisellä kerralla " \
+                           "ajaa ylläpitäjän oikeuksin, jotta se saa lisättyä rekisteriin tietoja."
+    IDS_ERR_READ_SET_KEY "Virhe luettaessa ja määritettäessä rekisteriavainta ""%s""."
+    IDS_ERR_WRITE_REGVALUE "Virhe kirjoitettaessa rekisterin arvoa ""HKEY_CURRENT_USER\\%s\\%s""."
+
+    /* importation */
+    IDS_ERR_IMPORT_EXISTS "Samanniminen (""%s"") asetustiedosto on jo olemassa."
+    IDS_ERR_IMPORT_FAILED "Asetustiedoston tuonti epäonnistui. Polkua ei voitu luoda:\n\n" \
+                          "%s\n\nVarmista, että sinulla on tarvittavat tiedosto-oikeudet."
+    IDS_NFO_IMPORT_SUCCESS "Asetustiedoston tuonti onnistui."
+    IDS_NFO_IMPORT_OVERWRITE "A config named ""%s"" already exists. Do you want to replace it?"
+    IDS_ERR_IMPORT_SOURCE "Cannot import file <%s> as it is already in the global or local config directory"
+
+    /* save/delete password */
+    IDS_NFO_DELETE_PASS "Napsauta OK poistaaksesi asetustiedostoon ""%s"" liitetyt salasanat."
+
+    /* Token password related */
+    IDS_NFO_TOKEN_PASSWORD_CAPTION "OpenVPN - Tokenin salasana"
+    IDS_NFO_TOKEN_PASSWORD_REQUEST "Anna Salasana/PIN tokenille '%S'"
+
+    IDS_NFO_AUTH_PASS_RETRY "Wrong credentials. Try again…"
+    IDS_NFO_KEY_PASS_RETRY  "Wrong password. Try again…"
+    IDS_ERR_INVALID_PASSWORD_INPUT "Invalid character in password"
+    IDS_ERR_INVALID_USERNAME_INPUT "Invalid character in username"
+    IDS_NFO_AUTO_CONNECT    "Connecting automatically in %u seconds…"
+    IDS_NFO_CLICK_HERE_TO_START "OpenVPN GUI is already running. Right click on the tray icon to start."
+    IDS_NFO_BYTECOUNT "Bytes in: %s  out: %s"
+
+END

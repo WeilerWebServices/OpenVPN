@@ -1,0 +1,83 @@
+Build a (non-shared) Vagrant Box for Solaris 11.3
+-----------------------------------------------
+
+- download the "Oracle Solaris 11.3 VM Template for Oracle VM VirtualBox"
+  from
+
+  http://www.oracle.com/technetwork/server-storage/solaris11/downloads/vm-templates-2245495.html
+  (free license, but only for "developing and testing your software")
+
+  -> sol-11_3-vbox.ova, about 1.8 Gbytes
+
+- import the ova into VirtualBox
+
+- work the installation menu (hostname, interface, timezone, language, ...)
+- root password (vagrant)
+- "create a user account" (vagrant/vagrant1)
+   ["must contain one special character"]
+
+- machine will work a while, reboot, then come up with a gui login
+
+- vagrant has sudo rights, but no "no password" ->
+
+     sudo bash
+     echo "vagrant ALL=(ALL) NOPASSWD: ALL" >>sudoers
+
+- install the "known insecure" key for vagrant
+
+     $ cd
+     $ mkdir .ssh
+     $ wget --no-check-certificate -O .ssh/authorized_keys \
+       https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant.pub
+
+- no packages yet (nothing, no cc, auto*, git)
+
+     $ sudo pkg install gcc autoconf automake libtool git  
+
+     non-existing: lzo2 lz4 mbedtls fping
+
+- get 3rd party packages:
+
+     https://www.opencsw.org/package/fping/
+     https://www.opencsw.org/packages/CSWliblzo-dev   [??]
+
+     $ sudo pkgadd -d http://get.opencsw.org/now
+     $ sudo /opt/csw/bin/pkgutil -U
+     $ sudo /opt/csw/bin/pkgutil -y -i liblzo_dev fping
+
+     (/opt/csw/include/lzo, /opt/csw/lib/liblzo2*)
+
+- base system updates
+
+    $ sudo pkg install entire
+
+  (do not ask...)
+
+
+- still missing at this point:
+       - lz4 (use bundled)
+       - mbedtls (compile on demand)
+       - tun/tap driver!
+
+- shutdown -> pass to vagrant
+
+     sudo init 0
+   
+
+- export as vagrant box
+
+   vagrant package --base sol-11_3-vbox --output solaris113-v1.box
+   (15+ minutes, the vdisk needs about 2.3Gbyte of space)
+
+    -rw-r--r-- 1 gert users 2236915305 Nov 12 16:45 solaris113-v1.box
+
+- possibly clean up $HOME/.vagrant.d/tmp/vagrant-package-<time>-<rnd>
+  afterwards, as vagrat is a bit sloppy about this... and leaves 2+G
+  behind here...
+
+
+- if you need to redo this, and have run "vagrant up solaris-113"
+  in the mean time, clear the cached copy of the last vagrant run from 
+    $HOME/.vagrant.d/boxes/<name_in_Vagrantfile>
+  (otherwise it will just ignore your new .box file)
+

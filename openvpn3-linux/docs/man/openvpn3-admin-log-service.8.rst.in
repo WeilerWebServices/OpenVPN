@@ -1,0 +1,59 @@
+==========================
+openvpn3-admin-log-service
+==========================
+
+----------------------
+OpenVPN 3 Linux client
+----------------------
+
+:Manual section: 8
+:Manual group: OpenVPN 3 Linux
+
+SYNOPSIS
+========
+| ``openvpn3-admin log-service`` ``[OPTIONS]``
+| ``openvpn3-admin log-service`` ``-h`` | ``--help``
+
+
+DESCRIPTION
+===========
+This manages a few adjustable knobs available in the ``openvpn3-service-logger``
+when run as a D-Bus service.  The access control for this command is managed in
+the D-Bus policy, which by default is only allowed for the *root* and
+*@OPENVPN_USERNAME@* user accounts.
+
+
+OPTIONS
+=======
+
+-h, --help      Print  usage and help details to the terminal
+
+--log-level LEVEL
+                Sets the system wide log verbosity for the log events being
+                logged to file or any other log destination
+                ``openvpn3-service-logger`` is configured to use.  Valid values
+                are :code:`0` to :code:`6`.  The higher value, the more verbose the log
+                events will be.  Log level :code:`6` will contain all debug events.
+
+--timestamp BOOL
+                Some of the log destinations supported by
+                ``openvpn3-service-logger`` may allow to log with or without
+                timestamps.  This option enables or disables timestamps attached
+                to log events.  Valid arguments: :code:`true`, :code:`false`.
+
+--dbus-details BOOL
+                Each log event contains some more detailed meta-data of the
+                sender of the log event.  This is disabled by default, but when
+                enabled it will add a line on the log destination
+                before the log event itself with this meta-data.  This is mostly
+                only useful when debugging and not recommended for normal
+                production.  Valid arguments: :code:`true`, :code:`false`
+
+--list-subscriptions
+                Lists all the services the log service has subscribed to.
+
+SEE ALSO
+========
+
+``openvpn3``\(1)
+``openvpn3-service-logger``\(8)

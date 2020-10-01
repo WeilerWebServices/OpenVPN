@@ -1,0 +1,484 @@
+/*
+ *  OpenVPN-GUI -- A Windows GUI for OpenVPN.
+ *
+ *  Copyright (C) 2004 Mathias Sundman <mathias@nilings.se>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program (see the file COPYING included with this
+ *  distribution); if not, write to the Free Software Foundation, Inc.,
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/* Passphrase Dialog */
+ID_DLG_PASSPHRASE DIALOGEX 6, 18, 160, 83
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | DS_CENTER | DS_SETFOREGROUND
+EXSTYLE WS_EX_TOPMOST
+CAPTION "OpenVPN"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_DUTCH, SUBLANG_DEFAULT
+BEGIN
+    LTEXT "Wachtwoord:", 201, 6, 6, 100, 10
+    EDITTEXT ID_EDT_PASSPHRASE, 6, 17, 107, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    CHECKBOX "Wachtwoord opslaan", ID_CHK_SAVE_PASS, 6, 33, 100, 10
+    PUSHBUTTON "OK", IDOK, 20, 49, 50, 14
+    PUSHBUTTON "Annuleren", IDCANCEL, 90, 49, 50, 14
+    LTEXT "", ID_TXT_WARNING, 6, 65, 100, 10
+END
+
+/* Auth Username/Password Dialog */
+ID_DLG_AUTH DIALOGEX 6, 18, 160, 95
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | DS_CENTER | DS_SETFOREGROUND
+EXSTYLE WS_EX_TOPMOST
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_DUTCH, SUBLANG_DEFAULT
+BEGIN
+    LTEXT "Gebruikersnaam:", 0, 6, 9, 54, 10
+    EDITTEXT ID_EDT_AUTH_USER, 60, 6, 94, 12, ES_AUTOHSCROLL
+    LTEXT "Wachtwoord:", 0, 6, 26, 50, 10
+    EDITTEXT ID_EDT_AUTH_PASS, 60, 23, 94, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    CHECKBOX "Wachtwoord opslaan", ID_CHK_SAVE_PASS, 6, 42, 100, 10
+    PUSHBUTTON "OK", IDOK, 20, 58, 50, 14, BS_DEFPUSHBUTTON | WS_TABSTOP | WS_DISABLED
+    PUSHBUTTON "Annuleren", IDCANCEL, 90, 58, 52, 14
+    LTEXT "", ID_TXT_WARNING, 6, 80, 150, 10
+END
+
+/* Auth Username/Password/Challenge Dialog */
+ID_DLG_AUTH_CHALLENGE DIALOG 6, 18, 160, 129
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | DS_CENTER | DS_SETFOREGROUND
+CAPTION "OpenVPN - Gebruikersauthenticatie"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_DUTCH, SUBLANG_DEFAULT
+BEGIN
+    LTEXT "Gebruikersnaam:", 0, 6, 9, 54, 10
+    EDITTEXT ID_EDT_AUTH_USER, 60, 6, 94, 12, ES_AUTOHSCROLL
+    LTEXT "Wachtwoord:", 0, 6, 26, 50, 10
+    EDITTEXT ID_EDT_AUTH_PASS, 60, 23, 94, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT "Response:", 0, 6, 60, 50, 10
+    LTEXT "", ID_TXT_AUTH_CHALLENGE, 6, 43, 148, 10
+    EDITTEXT ID_EDT_AUTH_CHALLENGE, 60, 57, 94, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    CHECKBOX "Wachtwoord opslaan", ID_CHK_SAVE_PASS, 6, 76, 100, 10
+    PUSHBUTTON "OK", IDOK, 20, 92, 50, 14, BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED
+    PUSHBUTTON "Annuleren", IDCANCEL, 90, 92, 52, 14
+    LTEXT "", ID_TXT_WARNING, 6, 108, 150, 10
+END
+
+/* Challenge Response Dialog */
+ID_DLG_CHALLENGE_RESPONSE DIALOG 6, 18, 212, 72
+STYLE WS_SIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | DS_CENTER | DS_SETFOREGROUND
+CAPTION "OpenVPN - Challenge Response"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_DUTCH, SUBLANG_DEFAULT
+BEGIN
+    LTEXT "", ID_TXT_DESCRIPTION, 6, 9, 208, 10
+    LTEXT "Response:", 0, 6, 30, 50, 10
+    EDITTEXT ID_EDT_RESPONSE, 60, 27, 94, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    PUSHBUTTON "OK", IDOK, 20, 51, 50, 14, BS_PUSHBUTTON | WS_TABSTOP
+    PUSHBUTTON "Annuleren", IDCANCEL, 90, 51, 52, 14
+END
+
+/* Status Dialog */
+ID_DLG_STATUS DIALOG 6, 18, 380, 210
+STYLE WS_SIZEBOX | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | DS_CENTER
+CAPTION "OpenVPN"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_DUTCH, SUBLANG_DEFAULT
+BEGIN
+    LTEXT "Verbinden…", ID_TXT_STATUS, 20, 5, 200, 10
+    LTEXT "", ID_TXT_BYTECOUNT, 20, 175, 200, 10
+    LTEXT "OpenVPN GUI 11.y.0.0/2.4.x", ID_TXT_VERSION, 220, 175, 150, 10
+    LTEXT "", ID_TXT_IP, 20, 160, 300, 10
+    PUSHBUTTON "Verbreken", ID_DISCONNECT, 50, 190, 50, 14
+    PUSHBUTTON "Opnieuw verbinden", ID_RESTART, 150, 190, 50, 14
+    PUSHBUTTON "Verbergen", ID_HIDE, 100, 190, 50, 14
+END
+
+/* Change Passphrase Dialog */
+ID_DLG_CHGPASS DIALOG 6, 18, 193, 82
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | DS_CENTER
+CAPTION "OpenVPN - Wachtwoord wijzigen"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_DUTCH, SUBLANG_DEFAULT
+BEGIN
+    LTEXT "Oud wachtwoord:", 171, 6, 9, 85, 10
+    EDITTEXT ID_EDT_PASS_CUR, 95, 6, 90, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT "Nieuw wachtwoord:", 172, 6, 26, 85, 10
+    EDITTEXT ID_EDT_PASS_NEW, 95, 23, 90, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT "Bevestig nieuw wachtwoord:", 173, 6, 42, 85, 10
+    EDITTEXT ID_EDT_PASS_NEW2, 95, 39, 90, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    PUSHBUTTON "OK", IDOK, 40, 59, 50, 14
+    PUSHBUTTON "Annuleren", IDCANCEL, 103, 59, 50, 14
+    LTEXT "", ID_TXT_KEYFORMAT, 0, 0, 0, 0
+    LTEXT "", ID_TXT_KEYFILE, 0, 0, 0, 0
+END
+
+/* Proxy Settings Dialog */
+ID_DLG_PROXY DIALOG 6, 18, 249, 104
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | DS_CENTER
+CAPTION "Proxy"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_DUTCH, SUBLANG_DEFAULT
+BEGIN
+    GROUPBOX "   ", 201, 6, 46, 235, 52
+    AUTORADIOBUTTON "Proxyinstellingen van OpenVPN configuratiebestand gebruiken", ID_RB_PROXY_OPENVPN, \
+                    13, 16, 210, 10, WS_GROUP | WS_TABSTOP
+    AUTORADIOBUTTON "Proxyinstellingen van systeem gebruiken", \
+                    ID_RB_PROXY_MSIE, 13, 31, 200, 10
+    AUTORADIOBUTTON "Handmatige configuratie", ID_RB_PROXY_MANUAL, 13, 46, 90, 10
+    AUTORADIOBUTTON "HTTP Proxy", ID_RB_PROXY_HTTP, 20, 62, 90, 10, WS_GROUP | WS_TABSTOP
+    AUTORADIOBUTTON "SOCKS Proxy", ID_RB_PROXY_SOCKS, 120, 62, 90, 10
+    LTEXT "Adres:", ID_TXT_PROXY_ADDRESS, 20, 77, 24, 10
+    EDITTEXT ID_EDT_PROXY_ADDRESS, 45, 75, 121, 12, ES_AUTOHSCROLL
+    RTEXT "Poort:", ID_TXT_PROXY_PORT, 167, 77, 24, 10
+    EDITTEXT ID_EDT_PROXY_PORT, 196, 75, 30, 12, ES_AUTOHSCROLL
+END
+
+/* General Settings Dialog */
+ID_DLG_GENERAL DIALOGEX 6, 18, 249, 104
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | DS_CENTER
+CAPTION "Algemeen"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_DUTCH, SUBLANG_DEFAULT
+BEGIN
+    GROUPBOX "Gebruikersinterface", 201, 6, 12, 235, 30
+    LTEXT "Taal:", ID_TXT_LANGUAGE, 17, 25, 52, 12
+    COMBOBOX ID_CMB_LANGUAGE, 37, 23, 191, 400, CBS_DROPDOWNLIST | WS_TABSTOP
+
+												 
+    GROUPBOX "Opstarten", 202, 6, 47, 235, 30
+    AUTOCHECKBOX "Opstarten met Windows", ID_CHK_STARTUP, 17, 59, 200, 12
+
+    GROUPBOX "Voorkeuren", 202, 6, 82, 235, 105
+    AUTOCHECKBOX "Aan logbestand toevoegen", ID_CHK_LOG_APPEND, 17, 95, 200, 10
+    AUTOCHECKBOX "Script-venster tonen", ID_CHK_SHOW_SCRIPT_WIN, 17, 110, 200, 10
+    AUTOCHECKBOX "Stille verbinding", ID_CHK_SILENT, 17, 125, 200, 10
+    AUTOCHECKBOX "Gebruik altijd interactieve service", ID_CHK_ALWAYS_USE_ISERVICE, 17, 140, 200, 10
+    LTEXT "Laat ballontip zien", ID_TXT_BALLOON, 17, 155, 100, 10
+    AUTORADIOBUTTON "Bij verbinden", ID_RB_BALLOON1, 28, 170, 50, 10, WS_GROUP | WS_TABSTOP
+    AUTORADIOBUTTON "Bij opnieuw verbinden", ID_RB_BALLOON2, 86, 170, 90, 10
+    AUTORADIOBUTTON "Nooit", ID_RB_BALLOON0, 181, 170, 40, 10
+END
+
+/* Advanced Dialog */
+ID_DLG_ADVANCED DIALOGEX 6, 18, 252, 218
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | DS_CENTER
+CAPTION "Geavanceerd"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_DUTCH, SUBLANG_DEFAULT
+BEGIN
+    GROUPBOX "Configuratiebestanden", 201, 6, 12, 235, 45
+    LTEXT "Map:", ID_TXT_FOLDER, 17, 25, 32, 10
+    EDITTEXT ID_EDT_CONFIG_DIR, 53, 23, 150, 12, ES_AUTOHSCROLL
+    LTEXT "Extensie:", ID_TXT_EXTENSION, 17, 40, 52, 10
+    EDITTEXT ID_EDT_CONFIG_EXT, 53, 38, 25, 12, ES_AUTOHSCROLL
+    PUSHBUTTON "…", ID_BTN_CONFIG_DIR, 208, 23, 25, 12
+
+    GROUPBOX "Logbestanden", 202, 6, 62, 235, 30
+    LTEXT "Map:", ID_TXT_FOLDER, 17, 74, 32, 10
+    EDITTEXT ID_EDT_LOG_DIR, 53, 72, 150, 12, ES_AUTOHSCROLL
+    PUSHBUTTON "…", ID_BTN_LOG_DIR, 208, 72, 25, 12
+
+    GROUPBOX "Script Timeout", 201, 6, 97, 235, 60
+    LTEXT "Preconnect script timeout:", ID_TXT_PRECONNECT_TIMEOUT, 17, 110, 100, 10
+    EDITTEXT ID_EDT_PRECONNECT_TIMEOUT, 103, 108, 20, 12, ES_AUTOHSCROLL|ES_NUMBER
+    LTEXT "Connect script timeout:", ID_TXT_CONNECT_TIMEOUT, 17, 125, 90, 10
+    EDITTEXT ID_EDT_CONNECT_TIMEOUT, 103, 123, 20, 12, ES_AUTOHSCROLL|ES_NUMBER
+    LTEXT "Disconnect script timeout:", ID_TXT_DISCONNECT_TIMEOUT, 17, 140, 90, 10
+    EDITTEXT ID_EDT_DISCONNECT_TIMEOUT, 103, 138, 20, 12, ES_AUTOHSCROLL|ES_NUMBER
+END
+
+/* About Dialog */
+ID_DLG_ABOUT DIALOG 6, 18, 249, 104
+STYLE WS_POPUP | WS_CAPTION | WS_SYSMENU | DS_CENTER
+CAPTION "Info"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_DUTCH, SUBLANG_DEFAULT
+BEGIN
+    ICON ID_ICO_APP, 0, 8, 16, 21, 20
+    LTEXT "OpenVPN GUI v" PACKAGE_VERSION_RESOURCE_STR " - Een Windows GUI voor OpenVPN\n" \
+          "Copyright (C) 2004-2005 Mathias Sundman <info@openvpn.se>\n" \
+          "Copyright (C) 2008-2014 Heiko Hund <heikoh@users.sf.net>\n" \
+          "Copyright (C) 2012-" GUI_COPYRIGHT_YEAR_END " OpenVPN GUI contributors\n" \
+          "https://github.com/OpenVPN/openvpn-gui/", 0, 36, 15, 206, 42
+    LTEXT "OpenVPN - Een programma om veilig IP-netwerken te tunnelen " \
+          "over een enkele TCP/UDP poort, met ondersteuning voor SSL/TLS-gebaseerde " \
+          "sessie-authenticatie en sleuteluitwisseling, pakketversleuteling, " \
+          "pakket-authenticatie en pakketcompressie.\n" \
+								  
+          "\n" \
+          "Copyright (C) 2002-" CORE_COPYRIGHT_YEAR_END " OpenVPN Technologies, Inc <info@openvpn.net>\n" \
+          "https://openvpn.net/", 0, 8, 61, 240, 64
+END
+
+/* Proxy Authentication Dialog */
+ID_DLG_PROXY_AUTH DIALOG 29, 23, 170, 65
+STYLE DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | DS_CENTER
+CAPTION "OpenVPN - Proxy Authenticatie"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_DUTCH, SUBLANG_DEFAULT
+BEGIN
+    LTEXT "Gebruikersnaam:", 201, 9, 8, 54, 10
+    EDITTEXT ID_EDT_PROXY_USER, 65, 5, 94, 12, ES_AUTOHSCROLL
+    LTEXT "Wachtwoord:", 202, 9, 26, 54, 10
+    EDITTEXT ID_EDT_PROXY_PASS, 65, 23, 94, 12, ES_PASSWORD | ES_AUTOHSCROLL
+    PUSHBUTTON "OK", IDOK, 68, 43, 40, 14, BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED
+END
+
+STRINGTABLE
+LANGUAGE LANG_DUTCH, SUBLANG_DEFAULT
+BEGIN
+    IDS_LANGUAGE_NAME "Nederlands - Dutch"
+
+    /* Tray – Resources */
+    IDS_TIP_DEFAULT "OpenVPN GUI "
+    IDS_TIP_CONNECTED "\nVerbonden met: "
+    IDS_TIP_CONNECTING "\nVerbinden met: "
+    IDS_TIP_CONNECTED_SINCE "\nVerbonden sinds: "
+    IDS_TIP_ASSIGNED_IP "\nToegewezen IP: %s"
+    IDS_MENU_SERVICE "OpenVPN Service"
+    IDS_MENU_IMPORT "Bestand importeren…"
+    IDS_MENU_SETTINGS "Instellingen…"
+    IDS_MENU_CLOSE "Afsluiten"
+    IDS_MENU_CONNECT "Verbinden"
+    IDS_MENU_DISCONNECT "Verbinding verbreken"
+    IDS_MENU_RECONNECT "Opnieuw verbinden"
+    IDS_MENU_STATUS "Status weergeven"
+    IDS_MENU_VIEWLOG "Logbestand weergeven"
+    IDS_MENU_EDITCONFIG "Configuratie bewerken"
+    IDS_MENU_PASSPHRASE "Wachtwoord wijzigen"
+    IDS_MENU_CLEARPASS  "Opgeslagen wachtwoorden vergeten"
+    IDS_MENU_SERVICE_START "Starten"
+    IDS_MENU_SERVICE_STOP "Stoppen"
+    IDS_MENU_SERVICE_RESTART "Herstarten"
+    IDS_MENU_SERVICEONLY_START "Verbinden"
+    IDS_MENU_SERVICEONLY_STOP "Verbinding verbreken"
+    IDS_MENU_SERVICEONLY_RESTART "Verbinding herstellen"
+    IDS_MENU_ASK_STOP_SERVICE "De verbinding verbreken (Stop de OpenVPN Service)?"
+
+    /* Logviewer – Resources */
+    IDS_ERR_START_LOG_VIEWER "Fout tijdens starten logboek: %s"
+    IDS_ERR_START_CONF_EDITOR "Fout tijdens starten configurator: %s"
+
+    /* OpenVPN */
+    IDS_ERR_MANY_CONFIGS "OpenVPN GUI ondersteunt niet meer dan %d configuraties. Neem contact op met de auteur indien u er meer wenst."
+    IDS_NFO_NO_CONFIGS "Geen leesbare verbindingsprofielen (config files) gevonden.\n"\
+                       "Gebruik het menu ""Bestand importeren…"" of kopieer uw configuratiebestanden naar ""%s"" of ""%s""."
+    IDS_ERR_CONFIG_NOT_AUTHORIZED "Het maken van deze verbinding (%s) vereist lidmaatschap van\n"\
+                                  "de groep ""%s"". Neem contact op met de systeembeheerder.\n"
+    IDS_ERR_CONFIG_TRY_AUTHORIZE  "Het maken van deze verbinding (%s) vereist lidmaatschap van\n"\
+                                  "de groep ""%s"".\n\n"\
+                                  "Wilt u uzelf toevoegen aan deze groep?\n"\
+                                  "Tijdens deze actie kan er om het administratorwachtwoord gevraagd worden."
+    IDS_NFO_CONFIG_AUTH_PENDING   "Het maken van deze verbinding (%s) vereist lidmaatschap van\n"\
+                                  "de groep ""%s"".\n\n"\
+                                  "Vul het voorgaande autorisatiescherm volledig in."
+    IDS_ERR_ADD_USER_TO_ADMIN_GROUP "Toevoegen van de gebruiker aan de groep ""%s"" is mislukt."
+    IDS_ERR_ONE_CONN_OLD_VER "Er kan maar één verbinding per OpenVPN-client gestart worden met versies ouder dan OpenVPN 2.0-beta6."
+    IDS_ERR_STOP_SERV_OLD_VER "De OpenVPN GUI kan niet gestart worden als de OpenVPN Service actief is. (OpenVPN 1.5/1.6). Stop eerst de OpenVPN Service indien u de OpenVPN GUI wenst te gebruiken."
+    IDS_ERR_CREATE_EVENT "CreateEvent mislukt tijdens exit event: %s"
+    IDS_ERR_UNKNOWN_PRIORITY "Onbekende prioriteitsnaam: %s"
+    IDS_ERR_LOG_APPEND_BOOL "Logbestand append flag (opgegeven als '%s') moet '0' of '1' zijn"
+    IDS_ERR_GET_MSIE_PROXY "Kan MSIE proxyinstellingen niet ophalen."
+    IDS_ERR_INIT_SEC_DESC "InitializeSecurityDescriptor mislukt."
+    IDS_ERR_SET_SEC_DESC_ACL "SetSecurityDescriptorDacl mislukt."
+    IDS_ERR_CREATE_PIPE_OUTPUT "CreatePipe on hOutputWrite mislukt."
+    IDS_ERR_CREATE_PIPE_INPUT "CreatePipe on hInputRead mislukt."
+    IDS_ERR_DUP_HANDLE_OUT_READ "DuplicateHandle on hOutputRead mislukt."
+    IDS_ERR_DUP_HANDLE_IN_WRITE "DuplicateHandle on hInputWrite mislukt."
+    IDS_ERR_CREATE_PROCESS "CreateProcess mislukt, exe='%s' cmdline='%s' dir='%s'"
+    IDS_ERR_CREATE_THREAD_STATUS "CreateThread om Statusvenster te tonen mislukt."
+    IDS_NFO_STATE_WAIT_TERM "Huidige status: Wachten tot OpenVPN gestopt is…"
+    IDS_NFO_STATE_CONNECTED "Huidige status: Verbonden"
+    IDS_NFO_NOW_CONNECTED "%s is nu verbonden."
+    IDS_NFO_ASSIGN_IP "Toegewezen IP: %s"
+    IDS_ERR_CERT_EXPIRED "Kan geen verbinding maken, het certificaat is vervallen. Controleer eventueel de systeemtijd."
+    IDS_ERR_CERT_NOT_YET_VALID "Kan geen verbinding maken, het certificaat is nog niet geldig. Controleer eventueel de systeemtijd."
+    IDS_NFO_STATE_RECONNECTING "Huidige status: Opnieuw verbinden"
+    IDS_NFO_STATE_DISCONNECTED "Huidige status: Niet verbonden"
+    IDS_NFO_CONN_TERMINATED "Verbinding met %s is verbroken."
+    IDS_NFO_STATE_FAILED "Huidige status: Kan geen verbinding maken"
+    IDS_NFO_CONN_FAILED "Verbinden met %s is mislukt."
+    IDS_NFO_STATE_FAILED_RECONN "Huidige status: Opnieuw verbinden is mislukt."
+    IDS_NFO_RECONN_FAILED "Opnieuw verbinden met %s is mislukt."
+    IDS_NFO_STATE_SUSPENDED "Huidige status: Onderbroken"
+    IDS_ERR_READ_STDOUT_PIPE "Fout tijdens lezen van OpenVPN StdOut Pipe."
+    IDS_ERR_CREATE_EDIT_LOGWINDOW "Creatie van RichEdit LogWindow mislukt!"
+    IDS_ERR_SET_SIZE "Instellen afmetingen mislukt!"
+    IDS_ERR_AUTOSTART_CONF "Kan opgegeven configuratie voor automatische verbinding niet vinden: %s"
+    IDS_ERR_CREATE_PIPE_IN_READ "CreatePipe tijdens hInputRead mislukt."
+    IDS_NFO_STATE_CONNECTING "Huidige status: Verbinden"
+    IDS_NFO_CONNECTION_XXX "OpenVPN Verbinding (%s)"
+    IDS_NFO_STATE_CONN_SCRIPT "Huidige status: Connect Script Uitvoeren"
+    IDS_NFO_STATE_DISCONN_SCRIPT "Huidige status: Disconnect Script Uitvoeren"
+    IDS_ERR_RUN_CONN_SCRIPT "Fout tijdens  uitvoeren Connect Script: %s"
+    IDS_ERR_GET_EXIT_CODE "Kan ExitCode niet uitlezen voor Connect Script (%s)"
+    IDS_ERR_CONN_SCRIPT_FAILED "Connect Script mislukt. (exitcode=%ld)"
+    IDS_ERR_RUN_CONN_SCRIPT_TIMEOUT "Connect Script mislukt. TimeOut na %d sec."
+    IDS_ERR_CONFIG_EXIST "Er bestaat al een configuratie '%s'. Elke configuratie " \
+                         "moet een unieke naam hebben, ook als " \
+                         "ze in verschillende mappen bewaard worden."
+    IDS_NFO_CONN_TIMEOUT "Verbinden met management interface mislukt.\n" \
+                         "Bekijk logbestand (%s) voor meer informatie."
+    /* main – Resources */
+    IDS_ERR_OPEN_DEBUG_FILE "Fout tijdens schrijven naar debug-log (%s)."
+    IDS_ERR_CREATE_PATH "Kan het %s pad niet aanmaken:\n%s"
+    IDS_ERR_LOAD_RICHED20 "Kan RICHED20.DLL niet laden."
+    IDS_ERR_SHELL_DLL_VERSION "De shell32.dll versie is te oud (0x%lx). Minstens versie 5.0 is vereist."
+    IDS_NFO_SERVICE_STARTED "OpenVPN Service gestart."
+    IDS_NFO_SERVICE_STOPPED "OpenVPN Service gestopt."
+    IDS_NFO_ACTIVE_CONN_EXIT "Er zijn nog actieve connecties die verbroken zullen worden indien OpenVPN GUI afgesloten wordt." \
+                             "\n\nBent u zeker dan u wilt afsluiten?"
+    IDS_NFO_SERVICE_ACTIVE_EXIT "Er is momenteel een actieve verbinding (OpenVPN services is gestart). " \
+                                "De verbinding blijft actief ook als OpenVPN GUI afgesloten wordt.\n\n" \
+                                "OpenVPN GUI afsluiten?"
+
+    /* options – Resources */
+    IDS_NFO_USAGE "--help\t\t\t: Toon dit bericht.\n" \
+                  "--connect cnn \t\t: Met ""cnn"" verbinden tijdens opstarten (extensie moet opgegeven worden).\n" \
+                  "\t\t\t   Voorbeeld: openvpn-gui --connect office.ovpn\n" \
+                  "--command cmd [args]\t: Een commando naar een draaiende instantie van de GUI versturen\n" \
+                  "Ondersteunde commando's:\n"\
+                  "    connect cnn            \t: de configuratie met de naam ""cnn"" verbinden\n"\
+                  "    disconnect cnn         \t: de verbinding van de configuratie met de naam ""cnn"" verbreken\n"\
+                  "    reconnect cnn          \t: de configuratie met de naam ""cnn"" opnieuw verbinden\n"\
+                  "    disconnect_all         \t: de verbinding van alle verbonden configuraties verbreken\n"\
+                  "    exit                 \t\t: de huidige instantie van de GUI afsluiten (er kan om bevestiging gevraagd worden)\n"\
+                  "    status cnn           \t\t: het status-scherm van de configuratie ""cnn"" laten zien als de verbinding is gemaakt\n"\
+                  "    silent_connection [0|1]\t: de vlag ""silent_connection"" aan- (1) of uitzetten (0)\n"\
+		  "\t\t\tVoorbeeld: openvpn-gui.exe --command disconnect myconfig\n"\
+                  "\n" \
+                  "Instellingen die de registerinstellingen overschrijven:\n" \
+                  "--exe_path\t\t: Pad naar openvpn.exe.\n" \
+                  "--config_dir\t\t: Pad naar map met configuratiebestanden.\n" \
+                  "--ext_string\t\t: Extensies voor de configuratiebestanden.\n" \
+                  "--log_dir\t\t\t: Pad naar de map waar de logbestanden bewaard worden.\n" \
+                  "--priority_string\t\t: Prioriteitsstring (Zie install.txt voor meer info).\n" \
+                  "--append_string\t\t: 1=Toevoegen aan logbestand. 0=Overschrijf logbestand tijdens verbinden.\n" \
+                  "--log_viewer\t\t: Pad naar de logviewer.\n" \
+                  "--editor\t\t\t: Pad naar de configuratie-editor.\n" \
+                  "--allow_edit\t\t: 1=Menu-item ""Configuratie bewerken"" weergeven.\n" \
+                  "--allow_service\t\t: 1=Servicecontrole menu-items weergeven.\n" \
+                  "--allow_password\t\t: 1=""Wachtwoord wijzigen"" menu-item weergeven.\n" \
+                  "--allow_proxy\t\t: 1=Menu ""Proxyinstellingen"" weergeven.\n" \
+                  "--show_balloon\t\t: 0=Nooit, 1=Tijdens eerste verbinding, 2=Bij elke herverbinding.\n" \
+                  "--service_only\t\t: 1=Service Only modus activeren.\n" \
+                  "--silent_connection\t\t: 1=Het status-venster tijdens het verbinden verbergen.\n" \
+                  "--show_script_window\t: 0=Het script uitvoer-venster verbergen, 1=Weergeven.\n" \
+                  "--passphrase_attempts\t: Aantal wachtwoordpogingen.\n" \
+                  "--connectscript_timeout\t: Timeout voor uitvoer van Connect Script.\n" \
+                  "--disconnectscript_timeout\t: Timeout voor uitvoer van Disconnect Script.\n" \
+                  "--preconnectscript_timeout\t: Timeout voor uitvoer Preconnect Script.\n"
+
+    IDS_NFO_USAGECAPTION "OpenVPN GUI Opties"
+    IDS_ERR_BAD_PARAMETER "Ik probeer ""%s"" te interpreteren als een --option parameter " \
+                      "maar kan geen '--'-prefix vinden."
+    IDS_ERR_BAD_OPTION "Fout in Opties: Onbekende optie of ontbrekende parameter: --%s\n" \
+                   "Gebruik openvpn-gui --help voor meer informatie."
+
+    /* passphrase – Resources */
+    IDS_ERR_CREATE_PASS_THREAD "CreateThread om ChangePassphrase venster aan te maken is mislukt."
+    IDS_NFO_CHANGE_PWD "Wijzig wachtwoord (%s)"
+    IDS_ERR_PWD_DONT_MATCH "De wachtwoorden die u heeft ingegeven komen niet overeen. Probeer opnieuw."
+    IDS_ERR_PWD_TO_SHORT "Het nieuwe wachtwoord moet minstens %d tekens bevatten."
+    IDS_NFO_EMPTY_PWD "Wilt u echt een LEEG wachtwoord instellen?"
+    IDS_ERR_UNKNOWN_KEYFILE_FORMAT "Onbekend keyfile formaat."
+    IDS_ERR_OPEN_PRIVATE_KEY_FILE "Fout tijdens openen van private key bestand (%s)."
+    IDS_ERR_OLD_PWD_INCORRECT "Het oude wachtwoord is niet correct."
+    IDS_ERR_OPEN_WRITE_KEY "Fout tijdens schrijven naar private key bestand (%s)."
+    IDS_ERR_WRITE_NEW_KEY "Fout tijdens schrijven naar nieuw private key bestand (%s)."
+    IDS_NFO_PWD_CHANGED "Het wachtwoord is gewijzigd."
+    IDS_ERR_READ_PKCS12 "Fout tijdens lezen van PKCS #12 bestand (%s)."
+    IDS_ERR_CREATE_PKCS12 "Fout tijdens aanmaken van PKCS #12 object. Wijzigen wachtwoord is mislukt."
+    IDS_ERR_OPEN_CONFIG "Kan configuratiebestand niet lezen: (%s)"
+    IDS_ERR_ONLY_ONE_KEY_OPTION "Er mag slechts een enkele ""key"" optie voorkomen in een configuratie."
+    IDS_ERR_ONLY_KEY_OR_PKCS12 "De opties ""key"" en ""pkcs12"" mogen niet samen voorkomen in een configuratie."
+    IDS_ERR_ONLY_ONE_PKCS12_OPTION "Er mag slechts een enkele ""pkcs12"" optie voorkomen in een configuratie."
+    IDS_ERR_HAVE_KEY_OR_PKCS12 "Er moet of een ""key"" of een ""pkcs12"" optie in de configuratie voorkomen."
+    IDS_ERR_KEY_FILENAME_TO_LONG "Het keybestand in de configuratie is te lang!"
+    IDS_ERR_PASSPHRASE2STDIN "Fout bij doorgeven wachtwoord aan stdin."
+    IDS_ERR_AUTH_USERNAME2STDIN "Fout bij doorgeven gebruikersnaam aan stdin."
+    IDS_ERR_AUTH_PASSWORD2STDIN "Fout bij doorgeven wachtwoord aan stdin."
+    IDS_ERR_CR2STDIN "Fout bij doorgeven CR aan stdin."
+    IDS_ERR_INVALID_CHARS_IN_PSW "Het nieuwe wachtwoord bevat niet-toegestane tekens. " \
+                             "Kies een nieuw wachtwoord."
+
+    /* settings */
+    IDS_SETTINGS_CAPTION "OpenVPN - Instellingen"
+
+    /* proxy */
+    IDS_ERR_HTTP_PROXY_ADDRESS "Er moet een HTTP proxyadres opgegeven worden."
+    IDS_ERR_HTTP_PROXY_PORT "Er moet een HTTP proxypoort opgegeven worden."
+    IDS_ERR_HTTP_PROXY_PORT_RANGE "Er moet een HTTP proxypoort opgegeven worden tussen 1 en 65535."
+    IDS_ERR_SOCKS_PROXY_ADDRESS "Er moet een SOCKS proxyadres opgegeven worden."
+    IDS_ERR_SOCKS_PROXY_PORT "Er moet een SOCKS proxypoort opgegeven worden."
+    IDS_ERR_SOCKS_PROXY_PORT_RANGE "Er moet een SOCKS proxypoort opgegeven worden tussen 1 en 65535."
+    IDS_ERR_CREATE_REG_HKCU_KEY "Fout tijdens aanmaken ""HKEY_CURRENT_USER\\%s"" sleutel."
+    IDS_ERR_GET_TEMP_PATH "Fout tijdens opvragen TempPath met GetTempPath(). Gebruikt ""C:\\"" als TempPath."
+
+    /* service */
+    IDS_ERR_OPEN_VPN_SERVICE "Openen ""OpenVPNService"" mislukt"
+    IDS_ERR_START_SERVICE "Starten ""OpenVPNService"" mislukt"
+    IDS_ERR_QUERY_SERVICE "Opvragen servicestatus mislukt."
+    IDS_ERR_SERVICE_START_FAILED "Starten van OpenVPN Service mislukt."
+    IDS_ERR_OPEN_SCMGR "Starten van OpenSCManager mislukt (%d)"
+    IDS_ERR_STOP_SERVICE "Stoppen van OpenVPN Service mislukt"
+    IDS_NFO_RESTARTED "OpenVPN Service Herstart."
+    IDS_ERR_ACCESS_SERVICE_PIPE "Toegang tot service pipe mislukt."
+    IDS_ERR_WRITE_SERVICE_PIPE "Schrijven naar service pipe mislukt."
+    IDS_ERR_INSTALL_ISERVICE     """OpenVPNServiceInteractive"" is niet geinstalleerd.\n"
+                                 "Wintun driver en taken die administratieve rechten vereisen werken mogelijk niet."
+    IDS_ERR_NOTSTARTED_ISERVICE  """OpenVPNServiceInteractive"" is niet gestart.\n"
+                                 "Wintun driver en taken die administratieve rechten vereisen werken mogelijk niet."
+    IDS_ERR_NOTSTARTED_ISERVICE_ADM  """OpenVPNServiceInteractive"" is niet gestart.\n"
+                                     "Wintun driver wil niet werken."
+
+    /* registry */
+    IDS_ERR_GET_WINDOWS_DIR "Fout tijdens opvragen Windows-map."
+    IDS_ERR_GET_PROFILE_DIR "Fout tijdens opvragen Gebruikersprofiel-map."
+    IDS_ERR_GET_PROGRAM_DIR "Fout tijdens opvragen ""Program"" map naam."
+    IDS_ERR_OPEN_REGISTRY "Fout tijdens lezen van register (HKLM\\SOFTWARE\\OpenVPN).\n " \
+                      "OpenVPN is waarschijnlijk niet geïnstalleerd"
+    IDS_ERR_READING_REGISTRY "Fout tijdens lezen van registersleutel (HKLM\\SOFTWARE\\OpenVPN)."
+    IDS_ERR_PASSPHRASE_ATTEMPTS "Registersleutel ""passphrase_attempts"" moet een waarde tussen 1 en 9 bevatten."
+    IDS_ERR_CONN_SCRIPT_TIMEOUT "Registersleutel ""connectscript_timeout"" moet een waarde tussen 0 en 99 bevatten."
+    IDS_ERR_DISCONN_SCRIPT_TIMEOUT "Registersleutel ""disconnectscript_timeout"" moet een waarde tussen 1 en 99 bevatten."
+    IDS_ERR_PRECONN_SCRIPT_TIMEOUT "Registersleutel ""preconnectscript_timeout"" moet een waarde tussen 1 en 99 bevatten."
+    IDS_ERR_CREATE_REG_KEY "Fout tijdens aanmaken van HKLM\\SOFTWARE\\OpenVPN-GUI sleutel."
+    IDS_ERR_OPEN_WRITE_REG "Fout tijdens het schrijven naar het register. Voer deze applicatie één keer uit als Administrator " \
+                       "om de registerinstellingen te updaten."
+    IDS_ERR_READ_SET_KEY "Fout tijdens lezen en instellen van registersleutel ""%s""."
+    IDS_ERR_WRITE_REGVALUE "Fout tijdens schrijven van registersleutel ""HKEY_CURRENT_USER\\%s\\%s""."
+
+    /* importation */
+    IDS_ERR_IMPORT_EXISTS "Een configuratie met de naam ""%s"" bestaat al."
+    IDS_ERR_IMPORT_FAILED "Importeren bestand is mislukt. De onderstaande bestandsnaam kon niet gemaakt worden.\n\n" \
+                          "%s\n\nControleer of de juiste rechten gebruikt worden."
+    IDS_NFO_IMPORT_SUCCESS "Importeren bestand gelukt."
+    IDS_NFO_IMPORT_OVERWRITE "Een configuratie met de naam ""%s"" bestaat al. Wilt u deze vervangen?"
+    IDS_ERR_IMPORT_SOURCE "Het bestand <%s> kan niet worden geïmporteerd omdat het al in de globale of lokale configuratiemap bestaat"
+
+    /* save/delete password */
+    IDS_NFO_DELETE_PASS "Klik op OK om alle opgeslagen wachtwoorden voor de configuratie ""%s"" te verwijderen"
+
+    /* Token password related */
+    IDS_NFO_TOKEN_PASSWORD_CAPTION "OpenVPN - Wachtwoord voor Token"
+    IDS_NFO_TOKEN_PASSWORD_REQUEST "Vul het wachtwoord of de PIN in voor Token '%S'"
+
+    IDS_NFO_AUTH_PASS_RETRY "Onjuiste gebruikersnaam of wachtwoord. Probeer opnieuw..."
+    IDS_NFO_KEY_PASS_RETRY  "Onjuist wachtwoord. Probeer opnieuw..."
+    IDS_ERR_INVALID_PASSWORD_INPUT "Ongeldig karakter in het wachtwoord"
+    IDS_ERR_INVALID_USERNAME_INPUT "Ongeldig karakter in de gebruikersnaam"
+    IDS_NFO_AUTO_CONNECT    "Automatisch verbinden over %u seconden..."
+    IDS_NFO_CLICK_HERE_TO_START "OpenVPN GUI draait al. Klik met de rechtermuisknop op het tray icon om te starten."
+    IDS_NFO_BYTECOUNT "Bytes in: %s  uit: %s"
+
+END
